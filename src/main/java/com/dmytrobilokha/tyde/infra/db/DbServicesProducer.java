@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 @ApplicationScoped
 public class DbServicesProducer {
 
-    @Resource(name = "jdbc/TydeDB")
+    @Resource(name = "jdbc/AppUserDB")
     private DataSource dataSource;
 
     @Dependent
