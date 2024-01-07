@@ -1,7 +1,8 @@
 package com.dmytrobilokha.tyde.infra;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
+import jakarta.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
+import jakarta.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import jakarta.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
@@ -18,7 +19,10 @@ import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
                 "Pbkdf2PasswordHash.KeySizeBytes=32"
         }
 )
-@BasicAuthenticationMechanismDefinition(realmName = "tyde")
+@FormAuthenticationMechanismDefinition(
+        loginToContinue = @LoginToContinue(
+                loginPage = "/login.xhtml",
+                errorPage = "/login-error.xhtml"))
 @ApplicationScoped
 public class AppConfig {
 }
