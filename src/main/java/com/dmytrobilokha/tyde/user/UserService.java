@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import jakarta.transaction.Transactional;
 
+import javax.annotation.CheckForNull;
 import java.util.Map;
 
 @ApplicationScoped
@@ -41,6 +42,23 @@ public class UserService implements UserServiceMXBean {
         } catch (DbException e) {
             throw new InternalApplicationException("Failed to create a user", e);
         }
+    }
+
+    @CheckForNull
+    public User validateUser(String login, char[] password) throws InternalApplicationException{
+        User user;
+        try {
+            user = userRepository.findUserByLogin(login);
+        } catch (DbException e) {
+            throw new InternalApplicationException("Failed to fetch user from the DB by login: '" + login + "'", e);
+        }
+        if (user == null) {
+            return null;
+        }
+        if(passwordHasher.verify(password, user.getPasswordHash())) {
+            return user;
+        }
+        return null;
     }
 
 }
