@@ -1,8 +1,12 @@
 <html>
     <body>
-        <form action="j_security_check" method="post">
-            <input name="j_username" type="text"/>
-            <input name="j_password" type="password"/>
+        <form action="./login" method="post">
+            <div><input name="j_username" type="text"/></div>
+            <div><input name="j_password" type="password"/></div>
+            <div>
+                <input id="remember-me" name="j_remember_me" type="checkbox" checked="checked"/>
+                <label for="remember-me">Remember me</label>
+            </div>
             <input type="submit"/>
         </form>
     </body>

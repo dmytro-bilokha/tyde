@@ -1,6 +1,5 @@
 package com.dmytrobilokha.tyde.user;
 
-import com.dmytrobilokha.tyde.infra.exception.InternalApplicationException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.credential.Credential;
@@ -27,12 +26,7 @@ public class AppIdentityStore implements IdentityStore {
         if (credential instanceof UsernamePasswordCredential passwordCredential) {
             var login = passwordCredential.getCaller();
             var password = passwordCredential.getPassword().getValue();
-            User user;
-            try {
-                user = userService.validateUser(login, password);
-            } catch (InternalApplicationException e) {
-                throw new RuntimeException(e);
-            }
+            var user = userService.validateUser(login, password);
             if (user != null) {
                 return new CredentialValidationResult(login, user.getRoles());
             }
