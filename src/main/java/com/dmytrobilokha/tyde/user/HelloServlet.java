@@ -19,6 +19,7 @@ public class HelloServlet extends HttpServlet {
         var responseWriter = resp.getWriter();
         var userPrincipal = req.getUserPrincipal();
         String userName = userPrincipal == null ? null : userPrincipal.getName();
+        responseWriter.println("Hello from " + this.getClass().getSimpleName());
         responseWriter.println("Current user: " + userName);
         responseWriter.println("User has role 'foo': " + req.isUserInRole("foo"));
         responseWriter.println("User has role 'bar': " + req.isUserInRole("bar"));
