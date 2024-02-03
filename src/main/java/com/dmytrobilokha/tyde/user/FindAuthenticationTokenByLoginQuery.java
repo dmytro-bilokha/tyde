@@ -6,8 +6,6 @@ import javax.annotation.CheckForNull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class FindAuthenticationTokenByLoginQuery implements SelectQuery<AuthenticationToken> {
 

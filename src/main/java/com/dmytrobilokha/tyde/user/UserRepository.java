@@ -1,6 +1,5 @@
 package com.dmytrobilokha.tyde.user;
 
-import com.dmytrobilokha.tyde.infra.db.DbException;
 import com.dmytrobilokha.tyde.infra.db.DbQueryExecutor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

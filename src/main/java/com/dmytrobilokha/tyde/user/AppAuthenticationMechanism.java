@@ -17,10 +17,10 @@ import jakarta.servlet.http.HttpServletResponse;
 @RememberMe(
         cookieName = AuthenticationConstants.REMEMBER_ME_COOKIE_NAME,
         cookieSecureOnly = false,
-        cookieMaxAgeSeconds = 60 * 60 * 24 * 24) // 24 days.
+        cookieMaxAgeSeconds = AuthenticationConstants.REMEMBER_ME_COOKIE_LIFE)
 @LoginToContinue(
-        loginPage = "/login.xhtml",
-        errorPage = "/login-error.xhtml")
+        loginPage = AuthenticationConstants.LOGIN_PAGE_PATH,
+        errorPage = AuthenticationConstants.LOGIN_ERROR_PAGE_PATH)
 @ApplicationScoped
 public class AppAuthenticationMechanism implements HttpAuthenticationMechanism {
 
@@ -36,7 +36,11 @@ public class AppAuthenticationMechanism implements HttpAuthenticationMechanism {
     }
 
     @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext context) throws AuthenticationException {
+    public AuthenticationStatus validateRequest(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            HttpMessageContext context
+    ) throws AuthenticationException {
         var credential = context.getAuthParameters().getCredential();
         if (credential != null) {
             return context.notifyContainerAboutLogin(identityStoreHandler.validate(credential));
@@ -45,7 +49,8 @@ public class AppAuthenticationMechanism implements HttpAuthenticationMechanism {
     }
 
     @Override
-    public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+    public void cleanSubject(
+            HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
         HttpAuthenticationMechanism.super.cleanSubject(request, response, httpMessageContext);
     }
 

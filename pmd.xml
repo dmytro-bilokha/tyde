@@ -35,8 +35,6 @@
     <rule ref="category/java/bestpractices.xml/PositionLiteralsFirstInComparisons" />
     <!-- Don't loose stack trace when rethrow -->
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace" />
-    <!-- All switch should contain default -->
-    <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault" />
     <!-- No unused parameters -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter" />
     <!-- No unused local variables -->
@@ -358,8 +356,6 @@
     <rule ref="category/java/performance.xml/AddEmptyString" />
     <!-- Use sb.append('a') instead of sb.append("a") -->
     <rule ref="category/java/performance.xml/AppendCharacterWithChar" />
-    <!-- Don't copy arrays manually, use Arrays.copyOf and System.arraycopy -->
-    <rule ref="category/java/performance.xml/AvoidArrayLoops" />
     <!-- Don't use outdated file stream API, it causes gc pauses -->
     <rule ref="category/java/performance.xml/AvoidFileStream" />
     <!-- Use pre cached BigDecimal values, like BigDecimal.ZERO -->

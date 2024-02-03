@@ -31,7 +31,7 @@ public class BootstrapContextListener implements ServletContextListener {
 
     @Inject
     public BootstrapContextListener(UserService userService) {
-	this.userService = userService;
+        this.userService = userService;
     }
 
     @Override

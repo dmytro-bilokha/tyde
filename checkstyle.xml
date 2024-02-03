@@ -65,9 +65,6 @@
         <module name="ClassTypeParameterName"/>
         <module name="InterfaceTypeParameterName"/>
 
-        <!-- Capitalized constant names -->
-        <module name="ConstantName"/>
-
         <!-- Classical Java convention for names -->
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName">
@@ -118,14 +115,11 @@
 
         <!-- No need to instantiate classes with factory methods -->
         <module name="IllegalInstantiation">
-            <property name="classes" value="java.lang.Boolean,java.lang.Integer,java.lang.Long,java.math.BigDecimal,java.math.BigInteger"/>
+            <property name="classes" value="java.lang.Boolean,java.lang.Integer,java.lang.Long,java.math.BigInteger"/>
         </module>
 
         <!-- No throws of too general exceptions, errors, etc -->
         <module name="IllegalThrows"/>
-
-        <!-- Every switch should have default clause -->
-        <module name="MissingSwitchDefault"/>
 
         <!-- No deep nesting -->
         <module name="NestedForDepth"/>

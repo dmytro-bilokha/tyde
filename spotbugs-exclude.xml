@@ -16,4 +16,9 @@
                 returning mutable value -->
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
     </Match>
+    <Match>
+        <!-- HttpServlet implements Serializable, because according to old specification HttpServlet could be
+            "passivated" by pushing their state to disk. But this shouldn't happen to Tomcat -->
+       <Bug pattern="SE_BAD_FIELD" />
+    </Match>
 </FindBugsFilter>

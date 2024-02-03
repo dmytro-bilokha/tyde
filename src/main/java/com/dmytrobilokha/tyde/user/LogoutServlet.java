@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 
-@WebServlet("/logout")
+@WebServlet(AuthenticationConstants.LOGOUT_SERVLET_PATH)
 public class LogoutServlet extends HttpServlet {
 
     private UserService userService;

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 
-@WebServlet("/login")
+@WebServlet(AuthenticationConstants.LOGIN_SERVLET_PATH)
 public class LoginServlet extends HttpServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
@@ -32,12 +32,12 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (securityContext.getCallerPrincipal() != null) {
-            resp.sendRedirect(req.getContextPath() + "/usertest");
+            resp.sendRedirect(req.getContextPath() + AuthenticationConstants.DEFAULT_AFTER_LOGIN_PATH);
         }
         var login = req.getParameter("j_username");
         var password = req.getParameter("j_password");
         if (login == null || password == null) {
-            resp.sendRedirect(req.getContextPath() + "/login-error.xhtml");
+            resp.sendRedirect(req.getContextPath() + AuthenticationConstants.LOGIN_ERROR_PAGE_PATH);
         }
         var rememberMe = req.getParameter("j_remember_me") != null;
         var authenticationStatus = securityContext.authenticate(req, resp, AuthenticationParameters.withParams()
@@ -49,7 +49,7 @@ public class LoginServlet extends HttpServlet {
         LOG.info("For login '{}' got '{}' status. The referer is '{}'", login, authenticationStatus, referer);
         switch (authenticationStatus) {
             case NOT_DONE, SEND_FAILURE -> {
-                resp.sendRedirect(req.getContextPath() + "/login-error.xhtml");
+                resp.sendRedirect(req.getContextPath() + AuthenticationConstants.LOGIN_ERROR_PAGE_PATH);
             }
             case SEND_CONTINUE -> {
                 return;
@@ -58,13 +58,13 @@ public class LoginServlet extends HttpServlet {
                 if (referer != null) {
                     var refererUrl = new URL(referer);
                     var requestUrl = new URL(req.getRequestURL().toString());
-                    if (refererUrl.getHost().equalsIgnoreCase(requestUrl.getHost()) &&
-                    refererUrl.getPath().startsWith(req.getContextPath())) {
+                    if (refererUrl.getHost().equalsIgnoreCase(requestUrl.getHost())
+                            && refererUrl.getPath().startsWith(req.getContextPath())) {
                         resp.sendRedirect(referer);
                         return;
                     }
                 }
-                resp.sendRedirect(req.getContextPath() + "/usertest");
+                resp.sendRedirect(req.getContextPath() + AuthenticationConstants.DEFAULT_AFTER_LOGIN_PATH);
             }
         }
     }

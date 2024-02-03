@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/usertest")
+@WebServlet(AuthenticationConstants.DEFAULT_AFTER_LOGIN_PATH)
 @DeclareRoles({"foo", "bar", "baz"})
 public class UserServlet extends HttpServlet {
 

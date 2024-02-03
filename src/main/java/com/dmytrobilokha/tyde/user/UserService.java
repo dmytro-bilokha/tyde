@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import javax.annotation.CheckForNull;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -20,7 +21,7 @@ public class UserService implements UserServiceMXBean {
     private static final char[] TOKEN_PART_CHARS =
             "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     private static final Pattern TOKEN_PATTERN = Pattern.compile("[a-zA-Z0-9]+:[a-zA-Z0-9]+");
-    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private Pbkdf2PasswordHash passwordHasher;
     private UserRepository userRepository;
@@ -54,7 +55,7 @@ public class UserService implements UserServiceMXBean {
         if (user == null) {
             return null;
         }
-        if(passwordHasher.verify(password, user.getPasswordHash())) {
+        if (passwordHasher.verify(password, user.getPasswordHash())) {
             return user;
         }
         return null;
@@ -97,7 +98,7 @@ public class UserService implements UserServiceMXBean {
         var tokenPasswordHash = passwordHasher.generate(tokenPasswordPart);
         userRepository.insertAuthenticationToken(
                 login, tokenLoginPart, tokenPasswordHash, LocalDateTime.now().plusMonths(1));
-        return tokenLoginPart + TOKEN_PARTS_SEPARATOR + String.valueOf(tokenPasswordPart);
+        return tokenLoginPart + TOKEN_PARTS_SEPARATOR + Arrays.toString(tokenPasswordPart);
     }
 
     public void removeToken(String tokenString) {
@@ -111,7 +112,7 @@ public class UserService implements UserServiceMXBean {
     private char[] generateTokenPart() {
         var output = new char[TOKEN_PART_LENGTH];
         for (int i = 0; i < TOKEN_PART_LENGTH; i++) {
-            var randomIndex = secureRandom.nextInt(TOKEN_PART_CHARS.length);
+            var randomIndex = SECURE_RANDOM.nextInt(TOKEN_PART_CHARS.length);
             output[i] = TOKEN_PART_CHARS[randomIndex];
         }
         return output;
