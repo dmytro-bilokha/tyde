@@ -1,39 +1,50 @@
 package com.dmytrobilokha.tyde.point;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.FormParam;
+
+import java.math.BigDecimal;
 
 public class PointInput {
 
     @FormParam("lat")
-    private String lat;
+    @NotNull
+    private BigDecimal lat;
     @FormParam("lon")
-    private String lon;
+    @NotNull
+    private BigDecimal lon;
     @FormParam("timestamp")
+    @NotNull
     private Long timestamp;
     @FormParam("speed")
-    private String speed;
+    @NotNull
+    private BigDecimal speed;
     @FormParam("altitude")
-    private String altitude;
+    @NotNull
+    private BigDecimal altitude;
     @FormParam("direction")
-    private String direction;
+    @NotNull
+    private BigDecimal direction;
     @FormParam("accuracy")
-    private String accuracy;
+    @NotNull
+    private BigDecimal accuracy;
     @FormParam("provider")
+    @NotNull
     private String provider;
 
-    public String getLat() {
+    public BigDecimal getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(BigDecimal lat) {
         this.lat = lat;
     }
 
-    public String getLon() {
+    public BigDecimal getLon() {
         return lon;
     }
 
-    public void setLon(String lon) {
+    public void setLon(BigDecimal lon) {
         this.lon = lon;
     }
 
@@ -45,35 +56,35 @@ public class PointInput {
         this.timestamp = timestamp;
     }
 
-    public String getSpeed() {
+    public BigDecimal getSpeed() {
         return speed;
     }
 
-    public void setSpeed(String speed) {
+    public void setSpeed(BigDecimal speed) {
         this.speed = speed;
     }
 
-    public String getAltitude() {
+    public BigDecimal getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(String altitude) {
+    public void setAltitude(BigDecimal altitude) {
         this.altitude = altitude;
     }
 
-    public String getDirection() {
+    public BigDecimal getDirection() {
         return direction;
     }
 
-    public void setDirection(String direction) {
+    public void setDirection(BigDecimal direction) {
         this.direction = direction;
     }
 
-    public String getAccuracy() {
+    public BigDecimal getAccuracy() {
         return accuracy;
     }
 
-    public void setAccuracy(String accuracy) {
+    public void setAccuracy(BigDecimal accuracy) {
         this.accuracy = accuracy;
     }
 

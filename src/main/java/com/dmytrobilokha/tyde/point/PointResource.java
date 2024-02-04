@@ -2,6 +2,7 @@ package com.dmytrobilokha.tyde.point;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.CheckForNull;
-import java.math.BigDecimal;
 import java.time.Instant;
 
 // TODO: implement proper security with separation of devices and user, token for each device, etc
@@ -33,21 +33,20 @@ public class PointResource {
     }
 
     @POST
-    public Response registerPoint(
-            @BeanParam PointInput pointInput) {
+    public Response registerPoint(@Valid @BeanParam PointInput pointInput) {
         LOG.info("lat={}, lon={}, timestamp={}, speed={}, altitude={}, direction={}, accuracy={}, provider={}",
                 pointInput.getLat(), pointInput.getLon(),
                 pointInput.getTimestamp(), pointInput.getSpeed(),
                 pointInput.getAltitude(), pointInput.getDirection(),
                 pointInput.getAccuracy(), pointInput.getProvider());
         var point = new Point();
-        point.setLat(new BigDecimal(pointInput.getLat()));
-        point.setLon(new BigDecimal(pointInput.getLon()));
+        point.setLat(pointInput.getLat());
+        point.setLon(pointInput.getLon());
         point.setClientTimestamp(Instant.ofEpochSecond(pointInput.getTimestamp()));
-        point.setSpeed(new BigDecimal(pointInput.getSpeed()));
-        point.setAltitude(new BigDecimal(pointInput.getAltitude()));
-        point.setDirection(new BigDecimal(pointInput.getDirection()));
-        point.setAccuracy(new BigDecimal(pointInput.getAccuracy()));
+        point.setSpeed(pointInput.getSpeed());
+        point.setAltitude(pointInput.getAltitude());
+        point.setDirection(pointInput.getDirection());
+        point.setAccuracy(pointInput.getAccuracy());
         point.setProvider(pointInput.getProvider());
         point.setServerTimestamp(Instant.now());
         pointService.registerPoint(point);
