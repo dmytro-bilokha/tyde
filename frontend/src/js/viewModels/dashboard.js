@@ -1,39 +1,24 @@
-/**
- * @license
- * Copyright (c) 2014, 2023, Oracle and/or its affiliates.
- * Licensed under The Universal Permissive License (UPL), Version 1.0
- * as shown at https://oss.oracle.com/licenses/upl/
- * @ignore
- */
-/*
- * Your dashboard ViewModel code goes here
- */
 define([
 	'leaflet',
 	'../accUtils',
 ],
- function(L, accUtils) {
-    function DashboardViewModel() {
-      // Below are a set of the ViewModel methods invoked by the oj-module component.
-      // Please reference the oj-module jsDoc for additional information.
+	function (L, accUtils) {
+		'use strict';
+		class MapViewModel {
 
-      /**
-       * Optional ViewModel method invoked after the View is inserted into the
-       * document DOM.  The application can put logic that requires the DOM being
-       * attached here.
-       * This method might be called multiple times - after the View is created
-       * and inserted into the DOM and after the View is reconnected
-       * after being disconnected.
-       */
-			this.connected = () => {
-				accUtils.announce('Dashboard page loaded.');
-				document.title = "Map";
-				const map = L.map('map').setView([51.505, -0.09], 13);
-				L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-					maxZoom: 19,
-					attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-				}).addTo(map);
-				const geojsonMarkerOptions = {
+			constructor() {
+				this.lastMarker = null;
+				this.line = null;
+				this.map = null;
+				this.pointOptions = {
+					radius: 8,
+					fillColor: "#ff78ff",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				};
+				this.lastPointOptions = {
 					radius: 8,
 					fillColor: "#ff7800",
 					color: "#000",
@@ -41,47 +26,43 @@ define([
 					opacity: 1,
 					fillOpacity: 0.8
 				};
-				const geojsonFeature = {
-					"type": "Feature",
-					"properties": {
-						"name": "Coors Field",
-						"amenity": "Baseball Stadium",
-						"popupContent": "This is where the Rockies play!"
-					},
-					"geometry": {
-						"type": "Point",
-						"coordinates": [51.505, -0.09]
-					}
+
+				this.connected = () => {
+					accUtils.announce('Map page loaded.');
+					document.title = "Map";
+					this.map = L.map('map').setView([51.505, -0.09], 13);
+					L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+						maxZoom: 19,
+						attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+					}).addTo(this.map);
+					this.line = L.polyline([]).addTo(this.map);
+					this.map.on('click', this.onMapClick);
 				};
-				L.geoJSON(geojsonFeature, {
-					pointToLayer: function (feature, latlng) {
-						return L.circleMarker(latlng, geojsonMarkerOptions);
+
+				this.onMapClick = (e) => {
+					this.line.addLatLng(e.latlng);
+					if (this.lastMarker !== null) {
+						this.lastMarker.setStyle(this.pointOptions);
 					}
-				}).addTo(map);
-				const marker = L.marker([51.5, -0.09]).addTo(map);
-			};
+					const circleMarker = L.circleMarker(e.latlng, this.lastPointOptions);
+					circleMarker.bindPopup("Hello, I am the popup.");
+					circleMarker.addTo(this.map);
+					this.lastMarker = circleMarker;
+					this.map.setView(e.latlng, 13);
+				};
 
-      /**
-       * Optional ViewModel method invoked after the View is disconnected from the DOM.
-       */
-      this.disconnected = () => {
-        // Implement if needed
-      };
+				this.disconnected = () => {
+					// Implement if needed
+				};
 
-      /**
-       * Optional ViewModel method invoked after transition to the new View is complete.
-       * That includes any possible animation between the old and the new View.
-       */
-      this.transitionCompleted = () => {
-        // Implement if needed
-      };
-    }
+				this.transitionCompleted = () => {
+					// Implement if needed
+				};
 
-    /*
-     * Returns an instance of the ViewModel providing one instance of the ViewModel. If needed,
-     * return a constructor for the ViewModel so that the ViewModel is constructed
-     * each time the view is displayed.
-     */
-    return DashboardViewModel;
-  }
+			}
+		}
+
+		return new MapViewModel();
+
+	}
 );
