@@ -16,7 +16,7 @@ throw_error() {
 }
 
 echo "---- BUILDING FRONTEND ----"
-cd ${fe_dir} && ojet clean web && ojet build ||\
+cd ${fe_dir} && ojet clean web && ojet build --optimize=none ||\
     throw_error "FAILED TO BUILD FRONTEND"
 echo "---- SUCCESS ----"
 

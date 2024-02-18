@@ -2,9 +2,9 @@ package com.dmytrobilokha.tyde.point;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-import javax.annotation.CheckForNull;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /* TODO:
@@ -15,7 +15,7 @@ public class PointService {
 
     private static final int MAX_CAPACITY = 1_000_000;
 
-    private final Deque<Point> pointStorage = new LinkedList<>();
+    private final LinkedList<Point> pointStorage = new LinkedList<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public void registerPoint(Point point) {
@@ -30,11 +30,16 @@ public class PointService {
         }
     }
 
-    @CheckForNull
-    public Point getLastPoint() {
+    public List<Point> getLastPoints(int quantity) {
+        var lastPoints = new ArrayList<Point>();
         try {
             lock.readLock().lock();
-            return pointStorage.peekLast();
+            for (var iterator = pointStorage.listIterator(pointStorage.size());
+                 iterator.hasPrevious() && lastPoints.size() < quantity;) {
+                var point = iterator.previous();
+                lastPoints.add(point);
+            }
+            return lastPoints;
         } finally {
             lock.readLock().unlock();
         }

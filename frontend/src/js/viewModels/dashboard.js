@@ -1,15 +1,18 @@
 define([
+	'../pointManager',
 	'leaflet',
 	'../accUtils',
 ],
-	function (L, accUtils) {
+	function (pointManager, L, accUtils) {
 		'use strict';
 		class MapViewModel {
 
 			constructor() {
+
 				this.lastMarker = null;
 				this.line = null;
 				this.map = null;
+
 				this.pointOptions = {
 					radius: 8,
 					fillColor: "#ff78ff",
@@ -18,6 +21,7 @@ define([
 					opacity: 1,
 					fillOpacity: 0.8
 				};
+
 				this.lastPointOptions = {
 					radius: 8,
 					fillColor: "#ff7800",
@@ -28,6 +32,7 @@ define([
 				};
 
 				this.connected = () => {
+					console.log("Map connecting...");
 					accUtils.announce('Map page loaded.');
 					document.title = "Map";
 					this.map = L.map('map').setView([51.505, -0.09], 13);
@@ -37,6 +42,29 @@ define([
 					}).addTo(this.map);
 					this.line = L.polyline([]).addTo(this.map);
 					this.map.on('click', this.onMapClick);
+					this.addPoints();
+					console.log("Map connected");
+				};
+
+				this.addPoints = () => {
+					pointManager.init().done(this.logPoints);
+				};
+
+				this.logPoints = () => {
+					console.log("Got points: " + pointManager.points().length);
+					for (let i = 0; i < pointManager.points().length; i++) {
+						const point = pointManager.points()[i];
+						const pointLatLng = [point.lat, point.lon];
+						this.line.addLatLng(pointLatLng);
+						if (this.lastMarker !== null) {
+							this.lastMarker.setStyle(this.pointOptions);
+						}
+						const circleMarker = L.circleMarker(pointLatLng, this.lastPointOptions);
+						circleMarker.bindPopup("Hello, I am the popup.");
+						circleMarker.addTo(this.map);
+						this.lastMarker = circleMarker;
+						this.map.setView(pointLatLng, 13);
+					}
 				};
 
 				this.onMapClick = (e) => {

@@ -3,17 +3,19 @@ package com.dmytrobilokha.tyde.point;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.CheckForNull;
 import java.time.Instant;
 
 // TODO: implement proper security with separation of devices and user, token for each device, etc
@@ -55,21 +57,25 @@ public class PointResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @CheckForNull
-    public PointModel getLastPoint() {
-        var lastPoint = pointService.getLastPoint();
-        if (lastPoint == null) {
-            return null;
-        }
-        var lastPointModel = new PointModel();
-        lastPointModel.setLat(lastPoint.getLat());
-        lastPointModel.setLon(lastPoint.getLon());
-        lastPointModel.setTimestamp(lastPoint.getClientTimestamp());
-        lastPointModel.setSpeed(lastPoint.getSpeed());
-        lastPointModel.setAltitude(lastPoint.getAltitude());
-        lastPointModel.setDirection(lastPoint.getDirection());
-        lastPointModel.setAccuracy(lastPoint.getAccuracy());
-        return lastPointModel;
+    public LastPointsModel getLastPoints(@Min(1) @Max(100) @QueryParam("quantity") int quantity) {
+        var result = new LastPointsModel();
+        result.setPoints(pointService.getLastPoints(quantity)
+                .stream()
+                .map(this::mapPoint)
+                .toList());
+        return result;
+    }
+
+    private PointModel mapPoint(Point point) {
+        var pointModel = new PointModel();
+        pointModel.setLat(point.getLat());
+        pointModel.setLon(point.getLon());
+        pointModel.setTimestamp(point.getClientTimestamp());
+        pointModel.setSpeed(point.getSpeed());
+        pointModel.setAltitude(point.getAltitude());
+        pointModel.setDirection(point.getDirection());
+        pointModel.setAccuracy(point.getAccuracy());
+        return pointModel;
     }
 
 }

@@ -1,0 +1,23 @@
+#!/bin/sh -
+
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.37297347&lon=4.89436961&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.7297347&lon=4.9436961&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.7297347&lon=4.436961&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.297347&lon=4.36961&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.97347&lon=4.861&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.7347&lon=4.6961&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+curl -X POST http://localhost:8080/tyde/service/point \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "lat=52.297347&lon=4.61&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
