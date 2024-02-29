@@ -2,4 +2,4 @@
 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.37297347&lon=4.89436961&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.3035375615186&lon=4.94616172288017&timestamp=1702915984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 

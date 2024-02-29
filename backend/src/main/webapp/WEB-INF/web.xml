@@ -6,6 +6,21 @@
 
   <display-name>Tyde</display-name>
 
+  <filter>
+      <filter-name>ExpiresFilter</filter-name>
+      <filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
+      <init-param>
+          <param-name>ExpiresDefault</param-name>
+          <param-value>modification plus 3 weeks</param-value>
+      </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ExpiresFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
   <session-config>
     <cookie-config>
       <http-only>true</http-only>

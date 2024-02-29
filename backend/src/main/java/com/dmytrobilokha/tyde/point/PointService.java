@@ -1,6 +1,8 @@
 package com.dmytrobilokha.tyde.point;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,6 +20,15 @@ public class PointService {
     private final LinkedList<Point> pointStorage = new LinkedList<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
+    private Event<PointRegisteredEvent> event;
+
+    public PointService() { }
+
+    @Inject
+    public PointService(Event<PointRegisteredEvent> event) {
+        this.event = event;
+    }
+
     public void registerPoint(Point point) {
         try {
             lock.writeLock().lock();
@@ -25,6 +36,7 @@ public class PointService {
                 pointStorage.removeFirst();
             }
             pointStorage.add(point);
+            event.fireAsync(new PointRegisteredEvent(point));
         } finally {
             lock.writeLock().unlock();
         }

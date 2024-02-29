@@ -15,6 +15,7 @@ define([],
         this.addConstant('CONTEXT_PATH', '/tyde');
         this.addConstant('POINT_URL', `${this.CONTEXT_PATH}/service/point`);
         this.addConstant('LAST_POINTS_URL', `${this.POINT_URL}?quantity=10`);
+        this.addConstant('WEB_SOCKET_URL', `${this.CONTEXT_PATH}/point-endpoint`);
       }
 
     }
