@@ -1,6 +1,6 @@
 package com.dmytrobilokha.tyde.infra.bootstrap;
 
-import com.dmytrobilokha.tyde.user.UserService;
+import com.dmytrobilokha.tyde.user.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;

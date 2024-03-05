@@ -1,5 +1,6 @@
 package com.dmytrobilokha.tyde.user;
 
+import com.dmytrobilokha.tyde.user.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

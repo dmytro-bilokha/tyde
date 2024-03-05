@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.persistence;
 
 import com.dmytrobilokha.tyde.infra.db.UpsertQuery;
 

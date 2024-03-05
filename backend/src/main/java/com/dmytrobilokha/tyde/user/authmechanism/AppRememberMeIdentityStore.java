@@ -1,5 +1,6 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.authmechanism;
 
+import com.dmytrobilokha.tyde.user.service.UserService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.CallerPrincipal;

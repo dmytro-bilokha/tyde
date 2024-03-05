@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.service;
 
 import com.dmytrobilokha.tyde.infra.exception.InternalApplicationException;
 

@@ -1,5 +1,7 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.service;
 
+import com.dmytrobilokha.tyde.user.persistence.User;
+import com.dmytrobilokha.tyde.user.persistence.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;

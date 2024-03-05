@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.persistence;
 
 import com.dmytrobilokha.tyde.infra.db.SelectQuery;
 
@@ -9,17 +9,17 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FindUserByLoginQuery implements SelectQuery<User> {
+public class FindUserByIdQuery implements SelectQuery<User> {
 
     private static final String QUERY = "SELECT au.id, au.login, au.password_hash, ar.name FROM app_user au"
             + " LEFT JOIN app_user_role aur ON aur.app_user_id = au.id"
             + " LEFT JOIN app_role ar ON ar.id = aur.app_role_id"
-            + " WHERE au.login = ?";
+            + " WHERE au.id = ?";
 
-    private final String login;
+    private final long id;
 
-    public FindUserByLoginQuery(String login) {
-        this.login = login;
+    public FindUserByIdQuery(long id) {
+        this.id = id;
     }
 
     @CheckForNull
@@ -28,7 +28,7 @@ public class FindUserByLoginQuery implements SelectQuery<User> {
         if (!resultSet.next()) {
             return null;
         }
-        long id = resultSet.getLong("id");
+        var login = resultSet.getString("login");
         var passwordHash = resultSet.getString("password_hash");
         var roles = new HashSet<String>();
         addRoleName(resultSet, roles);
@@ -52,7 +52,7 @@ public class FindUserByLoginQuery implements SelectQuery<User> {
 
     @Override
     public void setParameters(PreparedStatement statement) throws SQLException {
-        statement.setString(1, login);
+        statement.setLong(1, id);
     }
 
 }

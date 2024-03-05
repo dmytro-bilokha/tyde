@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.persistence;
 
 import java.time.LocalDateTime;
 
