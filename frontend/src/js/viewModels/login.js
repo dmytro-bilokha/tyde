@@ -26,7 +26,7 @@ define([
         this.inputDisabled = ko.observable(false);
         
         this.passwordTypeAction = (e) => {
-          if (e.detail.originalEvent.key === "Enter") {
+          if ("originalEvent" in e.detail && e.detail.originalEvent.key === "Enter") {
             this.loginAction();
           }
           return true;

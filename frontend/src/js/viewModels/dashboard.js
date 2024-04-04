@@ -64,7 +64,10 @@ define([
 				};
 
 				this.disconnected = () => {
-					// Implement if needed
+					this.lastMarker = null;
+					this.line = null;
+					this.map = null;
+					pointManager.destruct();
 				};
 
 				this.transitionCompleted = () => {

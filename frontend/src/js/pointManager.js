@@ -24,14 +24,22 @@ define([
             console.log("Websocket connection closed");
           };
           this.ws.onmessage = (evt) => {
+            console.log("Points count before:" + this.points().length);
             console.log("Got websocket message: " + evt.data);
             const payload = JSON.parse(evt.data);
             if (payload.points.length > 0) {
               this.points.push(...payload.points);
             }
+            console.log("Points count after:" + this.points().length);
           };
         };
 
+        this.destruct = () => {
+          this.points.removeAll();
+          if ("ws" in this) {
+            this.ws.close();
+          }
+        }
       }
 
     }

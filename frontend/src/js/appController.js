@@ -13,7 +13,8 @@ define([
   'ojs/ojarraydataprovider',
   'ojs/ojknockouttemplateutils',
   'ojs/ojmodule-element',
-  'ojs/ojknockout'
+  'ojs/ojknockout',
+  'oj-c/message-toast'
 ],
   function(
     ko,
@@ -51,34 +52,31 @@ define([
       const smQuery = ResponsiveUtils.getFrameworkQuery(ResponsiveUtils.FRAMEWORK_QUERY_KEY.SM_ONLY);
       this.smScreen = ResponsiveKnockoutUtils.createMediaQueryObservable(smQuery);
 
-      let navData = [
-        { path: '', redirect: 'dashboard' },
-        { path: 'dashboard', detail: { label: 'Dashboard', iconClass: 'oj-ux-ico-bar-chart' } },
-        { path: 'incidents', detail: { label: 'Incidents', iconClass: 'oj-ux-ico-fire' } },
-        { path: 'customers', detail: { label: 'Customers', iconClass: 'oj-ux-ico-contact-group' } },
-        { path: 'about', detail: { label: 'About', iconClass: 'oj-ux-ico-information-s' } }
-      ];
-      // Router setup
-      let router = new CoreRouter(navData, {
-        urlAdapter: new UrlParamAdapter()
-      });
-      router.sync();
+      this.closeMessage = (event) => {
+        notificationManager.deleteNotification(event.detail.key);
+      };
 
-      this.moduleAdapter = new ModuleRouterAdapter(router);
+      this.userMenuAction = (event) => {
+        if (event.detail.selectedValue === 'logout') {
+          notificationManager.removeAllNotificationsOfType('login');
+          loginManager
+            .logout()
+            .fail((jqXHR, textStatus, errorThrown) => {
+              notificationManager.addNotification({
+                severity: 'error',
+                summary: 'Logout failed',
+                detail: `${textStatus} - ${errorThrown}`,
+                type: 'login'
+              });
+            });
+          return;
+        }
 
-      this.selection = new KnockoutRouterAdapter(router);
+        console.log(event);
+      };
 
-      // Setup the navDataProvider with the routes, excluding the first redirected
-      // route.
-      this.navDataProvider = new ArrayDataProvider(navData.slice(1), {keyAttributes: "path"});
-
-      // Header
-      // Application Name used in Branding Area
-      this.appName = ko.observable("App Name");
-      // User Info used in Global Navigation area
-      this.userLogin = ko.observable("john.hancock@oracle.com");
       this.ModuleElementUtils = ModuleElementUtils;
-      this.dataProvider = new ArrayDataProvider(notificationManager.notifications);
+      this.messagesProvider = new ArrayDataProvider(notificationManager.notifications, {keyAttributes: 'id'});
      }
 
      loginManager.init();

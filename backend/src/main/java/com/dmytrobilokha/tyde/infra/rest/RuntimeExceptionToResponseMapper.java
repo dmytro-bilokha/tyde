@@ -5,10 +5,10 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class ExceptionToResponseMapper implements ExceptionMapper<Exception> {
+public class RuntimeExceptionToResponseMapper implements ExceptionMapper<RuntimeException> {
 
     @Override
-    public Response toResponse(Exception exception) {
+    public Response toResponse(RuntimeException exception) {
         return ExceptionMappingUtil.mapToResponse(exception);
     }
 

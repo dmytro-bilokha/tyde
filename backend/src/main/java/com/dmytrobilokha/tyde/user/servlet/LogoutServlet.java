@@ -1,5 +1,6 @@
-package com.dmytrobilokha.tyde.user;
+package com.dmytrobilokha.tyde.user.servlet;
 
+import com.dmytrobilokha.tyde.user.AuthenticationConstants;
 import com.dmytrobilokha.tyde.user.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -37,8 +38,7 @@ public class LogoutServlet extends HttpServlet {
         if (rememberMeToken != null) {
             userService.removeToken(rememberMeToken);
         }
-        var responseWriter = resp.getWriter();
-        responseWriter.println("You have been logged out");
+        resp.sendRedirect(req.getContextPath() + AuthenticationConstants.DEFAULT_AFTER_LOGOUT_PATH);
     }
 
 }

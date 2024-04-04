@@ -9,6 +9,7 @@ public final class AuthenticationConstants {
     public static final String LOGIN_PAGE_PATH = "/login.xhtml";
     public static final String LOGIN_ERROR_PAGE_PATH = "/login-error.xhtml";
     public static final String DEFAULT_AFTER_LOGIN_PATH = "/usertest";
+    public static final String DEFAULT_AFTER_LOGOUT_PATH = "/";
 
     private AuthenticationConstants() {
         // No instance, constants class

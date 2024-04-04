@@ -29,6 +29,7 @@ define([
             type: 'POST'
           }).done(() => {
             this.userLogin('');
+            window.location.replace(appConstants.LOGOUT_URL);
           });
         };
 

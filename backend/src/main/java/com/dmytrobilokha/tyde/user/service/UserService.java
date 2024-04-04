@@ -37,7 +37,9 @@ public class UserService implements UserServiceMXBean {
         passwordHasher.initialize(
                 Map.of(
                         "Pbkdf2PasswordHash.Algorithm", "PBKDF2WithHmacSHA512",
-                        "Pbkdf2PasswordHash.Iterations", "350000",
+                        // TODO: uncomment after debugging, remove the following line
+                        // "Pbkdf2PasswordHash.Iterations", "350000",
+                        "Pbkdf2PasswordHash.Iterations", "35",
                         "Pbkdf2PasswordHash.SaltSizeBytes", "32",
                         "Pbkdf2PasswordHash.KeySizeBytes", "32"
                 )
@@ -95,12 +97,12 @@ public class UserService implements UserServiceMXBean {
     }
 
     public String createToken(String login) {
-        var tokenLoginPart = String.valueOf(generateTokenPart());
-        var tokenPasswordPart = generateTokenPart();
-        var tokenPasswordHash = passwordHasher.generate(tokenPasswordPart);
+        var tokenLoginString = String.valueOf(generateTokenPart());
+        var tokenPasswordArray = generateTokenPart();
+        var tokenPasswordHash = passwordHasher.generate(tokenPasswordArray);
         userRepository.insertAuthenticationToken(
-                login, tokenLoginPart, tokenPasswordHash, LocalDateTime.now().plusMonths(1));
-        return tokenLoginPart + TOKEN_PARTS_SEPARATOR + Arrays.toString(tokenPasswordPart);
+                login, tokenLoginString, tokenPasswordHash, LocalDateTime.now().plusMonths(1));
+        return tokenLoginString + TOKEN_PARTS_SEPARATOR + String.valueOf(tokenPasswordArray);
     }
 
     public void removeToken(String tokenString) {
