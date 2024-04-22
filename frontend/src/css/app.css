@@ -1,4 +1,4 @@
-#map { height: 800px; }
+#map { height: 75lvh; }
 
 .sendOffScreen {
   position: absolute;
@@ -7,27 +7,6 @@
   width: 1px;
   height: 1px;
   overflow: hidden;
-}
-
-.demo-oracle-icon {
-  width:137px;
-  height:18px
-}
-
-.demo-oracle-icon:before {
-  content:url("images/oracle_logo.svg")
-}
-
-html:not([dir="rtl"]) .demo-oracle-icon {
-  padding-right:4px
-}
-
-html[dir="rtl"] .demo-oracle-icon {
-  padding-left:4px
-}
-
-.demo-oracle-icon:before {
-  display:inline
 }
 
 .demo-appheader-avatar {

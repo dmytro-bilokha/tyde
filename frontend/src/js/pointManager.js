@@ -27,8 +27,25 @@ define([
             console.log("Points count before:" + this.points().length);
             console.log("Got websocket message: " + evt.data);
             const payload = JSON.parse(evt.data);
-            if (payload.points.length > 0) {
-              this.points.push(...payload.points);
+            const newPoints = payload.points
+              .map(payloadPoint => ({
+                lat: payloadPoint.lat,
+                lon: payloadPoint.lon,
+                timestamp: Date.parse(payloadPoint.timestamp),
+                speed: payloadPoint.speed,
+                altitude: payloadPoint.altitude,
+                direction: payloadPoint.direction,
+                accuracy: payloadPoint.accuracy
+              }))
+              .sort((aPoint, bPoint) => aPoint.timestamp - bPoint.timestamp);
+            const existingPointsArray = this.points();
+            let lastTimestamp = existingPointsArray.length > 0
+              ? existingPointsArray[existingPointsArray.length - 1].timestamp
+              : 0;
+            for (const newPoint of newPoints) {
+              if (newPoint.timestamp > lastTimestamp) {
+                this.points.push(newPoint);
+              }
             }
             console.log("Points count after:" + this.points().length);
           };

@@ -34,7 +34,6 @@ define([
 				this.connected = () => {
 					console.log("Map connecting...");
 					accUtils.announce('Map page loaded.');
-					document.title = "Map";
 					this.map = L.map('map').setView([52.7297347, 4.436961], 13);
 					L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 						maxZoom: 19,
@@ -55,7 +54,7 @@ define([
 								this.lastMarker.setStyle(this.pointOptions);
 							}
 							const circleMarker = L.circleMarker(pointLatLng, this.lastPointOptions);
-							circleMarker.bindPopup(point.timestamp);
+							circleMarker.bindPopup(new Date(point.timestamp).toISOString());
 							circleMarker.addTo(this.map);
 							this.lastMarker = circleMarker;
 							this.map.setView(pointLatLng, 13);
