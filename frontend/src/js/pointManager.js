@@ -17,15 +17,12 @@ define([
           this.ws = new WebSocket(webSocketUrl);
           this.ws.onopen = () => {
             console.log("Websocket connection openned");
-            // request ten last points
-            this.ws.send("10");
+            this.ws.send(AppConstants.POINTS_LIMIT);
           };
           this.ws.onclose = () => {
             console.log("Websocket connection closed");
           };
           this.ws.onmessage = (evt) => {
-            console.log("Points count before:" + this.points().length);
-            console.log("Got websocket message: " + evt.data);
             const payload = JSON.parse(evt.data);
             const newPoints = payload.points
               .map(payloadPoint => ({
@@ -45,9 +42,11 @@ define([
             for (const newPoint of newPoints) {
               if (newPoint.timestamp > lastTimestamp) {
                 this.points.push(newPoint);
+                if (this.points().length > AppConstants.POINTS_LIMIT) {
+                  this.points.splice(0, 1);
+                }
               }
             }
-            console.log("Points count after:" + this.points().length);
           };
         };
 

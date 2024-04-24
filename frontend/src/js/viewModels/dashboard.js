@@ -12,6 +12,8 @@ define([
 				this.lastMarker = null;
 				this.line = null;
 				this.map = null;
+				this.pointsLatLng = [];
+				this.markers = [];
 
 				this.pointOptions = {
 					radius: 8,
@@ -39,7 +41,7 @@ define([
 						maxZoom: 19,
 						attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 					}).addTo(this.map);
-					this.line = L.polyline([]).addTo(this.map);
+					this.line = L.polyline(this.pointsLatLng).addTo(this.map);
 					pointManager.init(this.onPointsChange);
 					console.log("Map connected");
 				};
@@ -49,17 +51,23 @@ define([
 						if (change.status === 'added') {
 							const point = change.value;
 							const pointLatLng = [point.lat, point.lon];
-							this.line.addLatLng(pointLatLng);
-							if (this.lastMarker !== null) {
-								this.lastMarker.setStyle(this.pointOptions);
+							this.pointsLatLng.push(pointLatLng);
+							if (this.markers.length > 0) {
+								const lastMarker = this.markers[this.markers.length - 1];
+								lastMarker.setStyle(this.pointOptions);
 							}
 							const circleMarker = L.circleMarker(pointLatLng, this.lastPointOptions);
 							circleMarker.bindPopup(new Date(point.timestamp).toISOString());
 							circleMarker.addTo(this.map);
-							this.lastMarker = circleMarker;
+							this.markers.push(circleMarker);
 							this.map.setView(pointLatLng, 13);
+						} else if (change.status === 'deleted') {
+							this.pointsLatLng.splice(change.index, 1);
+							this.map.removeLayer(this.markers[change.index]);
+							this.markers.splice(change.index, 1);
 						}
 					}
+					this.line.setLatLngs(this.pointsLatLng);
 				};
 
 				this.disconnected = () => {

@@ -12,6 +12,7 @@ define([],
       }
 
       constructor() {
+        this.addConstant('POINTS_LIMIT', 20);
         this.addConstant('CONTEXT_PATH', '/tyde');
         this.addConstant('LOGOUT_URL', `${this.CONTEXT_PATH}/logout`);
         this.addConstant('POINT_URL', `${this.CONTEXT_PATH}/service/point`);
