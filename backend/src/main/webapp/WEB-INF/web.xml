@@ -60,9 +60,13 @@
     </web-resource-collection>
     <auth-constraint>
       <description>user must have a role to access location data</description>
-      <role-name>foo</role-name>
+      <role-name>tyde_user</role-name>
     </auth-constraint>
   </security-constraint>
+
+  <security-role>
+    <role-name>tyde_user</role-name>
+  </security-role>
 
   <error-page>
     <location>/error</location>
