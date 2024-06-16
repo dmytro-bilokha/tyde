@@ -49,7 +49,9 @@ public class AuthenticationResource {
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response login(@Context HttpServletRequest req, @Context HttpServletResponse resp, @Valid LoginRequest loginRequest) throws InternalApplicationException {
+    public Response login(@Context HttpServletRequest req,
+                          @Context HttpServletResponse resp,
+                          @Valid LoginRequest loginRequest) throws InternalApplicationException {
         var authenticationStatus = securityContext.authenticate(req, resp, AuthenticationParameters.withParams()
                 .credential(new UsernamePasswordCredential(loginRequest.getLogin(), loginRequest.getPassword()))
                 .rememberMe(loginRequest.isRememberMe())
@@ -77,15 +79,15 @@ public class AuthenticationResource {
                 .findAny()
                 .map(Cookie::getValue)
                 .orElse(null);
-        try {
-            req.logout();
-        } catch (ServletException e) {
-            throw new InternalApplicationException("Failed to logout", e);
-        }
         // For some weird reason TomEE erases "remember me" cookie value early and passes null instead of its value to
         // RememberMyIdentityStore.removeLoginToken(). That is why I have to remove it here explicitly.
         if (rememberMeToken != null) {
             userService.removeToken(rememberMeToken);
+        }
+        try {
+            req.logout();
+        } catch (ServletException e) {
+            throw new InternalApplicationException("Failed to logout", e);
         }
         return Response.ok().build();
     }

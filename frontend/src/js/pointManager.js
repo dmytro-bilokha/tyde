@@ -11,9 +11,38 @@ define([
 
         this.points = ko.observableArray([]);
 
-        this.init = (onPointsChange) => {
-          this.closeRequested = false;
-          this.points.subscribe(onPointsChange, null, "arrayChange");
+        this.fetchAvailableDevices = (devicesObservableArray) => {
+          return $.ajax({
+            url: AppConstants.GPS_DEVICE_URL,
+          }).done((response) => {
+            devicesObservableArray.removeAll();
+            response.availableDevices.forEach((device) => {
+              devicesObservableArray.push({
+                value: device.id,
+                label: device.description
+              });
+            });
+          }).fail((jqXHR, textStatus, errorThrown) => {
+            let serverMessage = null;
+            if (jqXHR.responseJSON) {
+              serverMessage = jqXHR.responseJSON.message;
+            }
+            notificationManager.addNotification({
+              severity: 'error',
+              summary: 'Failed to get list of GPS devices',
+              detail: serverMessage ? serverMessage : `${textStatus} - ${errorThrown}`,
+              type: 'gps-device'
+            });
+          });
+        };
+
+        this.connect = (deviceId) => {
+          this.disconnect();
+          this.gpsDeviceId = parseInt(deviceId);
+          if (isNaN(this.gpsDeviceId)) {
+            // If value is not a valid int, we only disconnect and don't do anything
+            return;
+          }
           const webSocketUrl = new URL(AppConstants.WEB_SOCKET_URL, location.href);
           webSocketUrl.protocol = webSocketUrl.protocol.replace('http', 'ws');
           this.ws = new WebSocket(webSocketUrl);
@@ -24,7 +53,7 @@ define([
           };
 
           this.sendPing = () => {
-            this.ws.send(0);
+            this.ws.send(AppConstants.PING_MESSAGE);
             this.pingTimeoutId = setTimeout(this.onPingTimeout, AppConstants.PING_TIMEOUT_MS);
           };
 
@@ -36,7 +65,7 @@ define([
 
           this.ws.onopen = () => {
             console.log("Websocket connection openned");
-            this.ws.send(AppConstants.POINTS_LIMIT);
+            this.ws.send(`${this.gpsDeviceId}:${AppConstants.POINTS_LIMIT}`);
             this.pingIntervalId = setInterval(this.sendPing, AppConstants.PING_INTERVAL_MS);
           };
 
@@ -46,6 +75,7 @@ define([
             }
             if (this.closeRequested) {
               console.log("Websocket connection closed, as requested");
+              this.closeRequested = false;
             } else {
               console.error("Websocket connection forcibly closed");
               notificationManager.removeAllNotificationsOfType('pointConnection');
@@ -65,6 +95,10 @@ define([
 
           this.ws.onmessage = (evt) => {
             this.acceptPong();
+            if (this.closeRequested) {
+              // Don't accept new points data if we are closing
+              return;
+            }
             const payload = JSON.parse(evt.data);
             const newPoints = payload.points
               .map(payloadPoint => ({
@@ -92,13 +126,25 @@ define([
           };
         };
 
+        this.init = (onPointsChange) => {
+          this.points.subscribe(onPointsChange, null, "arrayChange");
+        };
+
         this.destruct = () => {
-          this.points.removeAll();
-          if ("ws" in this) {
-            this.closeRequested = true;
-            this.ws.close();
-          }
+          this.disconnect();
         }
+
+        this.disconnect = () => {
+          this.closeRequested = true;
+          while (this.points().length > 0) {
+            this.points.pop();
+          }
+          if ("ws" in this) {
+            this.ws.close();
+          } else {
+            this.closeRequested = false;
+          }
+        };
       }
 
     }

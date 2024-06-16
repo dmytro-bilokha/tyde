@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.point;
+package com.dmytrobilokha.tyde.point.service;
 
 public class PointRegisteredEvent {
 

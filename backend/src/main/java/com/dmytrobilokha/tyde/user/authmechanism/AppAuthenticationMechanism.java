@@ -8,7 +8,6 @@ import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.authentication.mechanism.http.AutoApplySession;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
-import jakarta.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import jakarta.security.enterprise.authentication.mechanism.http.RememberMe;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,9 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
         cookieName = AuthenticationConstants.REMEMBER_ME_COOKIE_NAME,
         cookieSecureOnly = false,
         cookieMaxAgeSeconds = AuthenticationConstants.REMEMBER_ME_COOKIE_LIFE)
-@LoginToContinue(
-        loginPage = AuthenticationConstants.LOGIN_PAGE_PATH,
-        errorPage = AuthenticationConstants.LOGIN_ERROR_PAGE_PATH)
 @ApplicationScoped
 public class AppAuthenticationMechanism implements HttpAuthenticationMechanism {
 

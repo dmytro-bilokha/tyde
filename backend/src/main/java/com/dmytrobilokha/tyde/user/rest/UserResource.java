@@ -11,11 +11,9 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.Optional;
 
-// TODO: add security constraints
 @RequestScoped
 @Path("user")
 public class UserResource {
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

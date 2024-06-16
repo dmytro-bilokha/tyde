@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URL;
 
+// TODO: remove this servlet after all testing is done
 @WebServlet(AuthenticationConstants.LOGIN_SERVLET_PATH)
 public class LoginServlet extends HttpServlet {
 

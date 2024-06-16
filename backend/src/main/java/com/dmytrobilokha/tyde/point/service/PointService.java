@@ -1,23 +1,22 @@
-package com.dmytrobilokha.tyde.point;
+package com.dmytrobilokha.tyde.point.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/* TODO:
-Instead of this POC implement proper storage for points in the DB with separation by user device, etc.
- */
 @ApplicationScoped
 public class PointService {
 
-    private static final int MAX_CAPACITY = 1_000_000;
+    private static final int MAX_CAPACITY = 100;
 
-    private final LinkedList<Point> pointStorage = new LinkedList<>();
+    private final Map<Long, LinkedList<Point>> pointStorage = new HashMap<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private Event<PointRegisteredEvent> event;
@@ -32,21 +31,26 @@ public class PointService {
     public void registerPoint(Point point) {
         try {
             lock.writeLock().lock();
-            if (pointStorage.size() >= MAX_CAPACITY) {
-                pointStorage.removeFirst();
+            var points = pointStorage.computeIfAbsent(point.getGpsDeviceId(), id -> new LinkedList<>());
+            if (points.size() >= MAX_CAPACITY) {
+                points.removeFirst();
             }
-            pointStorage.add(point);
+            points.add(point);
             event.fireAsync(new PointRegisteredEvent(point));
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    public List<Point> getLastPoints(int quantity) {
+    public List<Point> getLastPoints(long gpsDeviceId, int quantity) {
         var lastPoints = new ArrayList<Point>();
         try {
             lock.readLock().lock();
-            for (var iterator = pointStorage.listIterator(pointStorage.size());
+            var points = pointStorage.get(gpsDeviceId);
+            if (points == null) {
+                return lastPoints;
+            }
+            for (var iterator = points.listIterator(points.size());
                  iterator.hasPrevious() && lastPoints.size() < quantity;) {
                 var point = iterator.previous();
                 lastPoints.add(point);

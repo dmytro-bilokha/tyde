@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+// TODO: remove this servlet after all testing is done
 @WebServlet(AuthenticationConstants.DEFAULT_AFTER_LOGIN_PATH)
 @DeclareRoles({"foo", "bar", "baz"})
 public class UserServlet extends HttpServlet {

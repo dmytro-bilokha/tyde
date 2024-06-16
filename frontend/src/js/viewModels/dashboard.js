@@ -1,13 +1,27 @@
 define([
+  'knockout',
+	'ojs/ojarraydataprovider',
 	'../pointManager',
 	'leaflet',
 	'../accUtils',
+	'oj-c/select-single',
 ],
-	function (pointManager, L, accUtils) {
+	function (
+		ko,
+		ArrayDataProvider,
+		pointManager,
+		L,
+		accUtils
+	) {
 		'use strict';
 		class MapViewModel {
 
 			constructor() {
+
+				this.devices = ko.observableArray([]);
+				this.deviceProvider = new ArrayDataProvider(this.devices, {
+					keyAttributes: 'value',
+				});
 
 				this.lastMarker = null;
 				this.line = null;
@@ -34,6 +48,7 @@ define([
 				};
 
 				this.connected = () => {
+					pointManager.fetchAvailableDevices(this.devices);
 					console.log("Map connecting...");
 					accUtils.announce('Map page loaded.');
 					this.map = L.map('map').setView([52.7297347, 4.436961], 13);
@@ -44,6 +59,10 @@ define([
 					this.line = L.polyline(this.pointsLatLng).addTo(this.map);
 					pointManager.init(this.onPointsChange);
 					console.log("Map connected");
+				};
+
+				this.onGpsDeviceChange = (deviceChangeEvent) => {
+					pointManager.connect(deviceChangeEvent.detail.value);
 				};
 
 				this.onPointsChange = (changes) => {

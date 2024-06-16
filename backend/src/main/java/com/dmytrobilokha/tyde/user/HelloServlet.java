@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+// TODO: remove this servlet after all testing is done
 @WebServlet("/hello")
 @ServletSecurity(value = @HttpConstraint(rolesAllowed = {"bar"}))
 public class HelloServlet extends HttpServlet {

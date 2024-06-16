@@ -1,10 +1,11 @@
-package com.dmytrobilokha.tyde.point;
+package com.dmytrobilokha.tyde.point.service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 public class Point {
 
+    private long gpsDeviceId;
     private BigDecimal lat;
     private BigDecimal lon;
     private Instant clientTimestamp;
@@ -14,6 +15,14 @@ public class Point {
     private BigDecimal accuracy;
     private String provider;
     private Instant serverTimestamp;
+
+    public long getGpsDeviceId() {
+        return gpsDeviceId;
+    }
+
+    public void setGpsDeviceId(long gpsDeviceId) {
+        this.gpsDeviceId = gpsDeviceId;
+    }
 
     public BigDecimal getLat() {
         return lat;

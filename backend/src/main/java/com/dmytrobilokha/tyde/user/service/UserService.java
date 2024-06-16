@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import javax.annotation.CheckForNull;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -98,7 +97,7 @@ public class UserService implements UserServiceMXBean {
 
     public String createToken(String login) {
         var tokenLoginString = String.valueOf(generateTokenPart());
-        var tokenPasswordArray = generateTokenPart();
+        char[] tokenPasswordArray = generateTokenPart();
         var tokenPasswordHash = passwordHasher.generate(tokenPasswordArray);
         userRepository.insertAuthenticationToken(
                 login, tokenLoginString, tokenPasswordHash, LocalDateTime.now().plusMonths(1));

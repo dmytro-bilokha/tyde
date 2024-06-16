@@ -1,5 +1,6 @@
-package com.dmytrobilokha.tyde.point;
+package com.dmytrobilokha.tyde.point.http;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.FormParam;
 
@@ -31,6 +32,9 @@ public class PointInput {
     @FormParam("provider")
     @NotNull
     private String provider;
+    @FormParam("token")
+    @NotEmpty
+    private String token;
 
     public BigDecimal getLat() {
         return lat;
@@ -96,4 +100,11 @@ public class PointInput {
         this.provider = provider;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

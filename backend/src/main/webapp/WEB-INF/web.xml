@@ -45,8 +45,18 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>PointEndpoint</web-resource-name>
-      <description> Security constraint for Point WebSocket endpoint</description>
-      <url-pattern>/point-endpoint</url-pattern>
+      <description>Security constraint for Point WebSocket endpoint</description>
+      <url-pattern>/point-endpoint/*</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>UserResource</web-resource-name>
+      <description>Security constraint for UserResource</description>
+      <url-pattern>/service/user/*</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>GpsDeviceResource</web-resource-name>
+      <description>Security constraint for GpsDeviceResource</description>
+      <url-pattern>/service/gps-device/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <description>user must have a role to access location data</description>
