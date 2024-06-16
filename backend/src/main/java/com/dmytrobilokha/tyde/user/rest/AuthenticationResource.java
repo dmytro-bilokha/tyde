@@ -51,7 +51,7 @@ public class AuthenticationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(@Context HttpServletRequest req,
                           @Context HttpServletResponse resp,
-                          @Valid LoginRequest loginRequest) throws InternalApplicationException {
+                          @Valid LoginRequest loginRequest) {
         var authenticationStatus = securityContext.authenticate(req, resp, AuthenticationParameters.withParams()
                 .credential(new UsernamePasswordCredential(loginRequest.getLogin(), loginRequest.getPassword()))
                 .rememberMe(loginRequest.isRememberMe())
@@ -73,7 +73,7 @@ public class AuthenticationResource {
 
     @POST
     @Path("logout")
-    public Response logout(@Context HttpServletRequest req) throws InternalApplicationException {
+    public Response logout(@Context HttpServletRequest req) {
         var rememberMeToken = Arrays.stream(req.getCookies())
                 .filter(cookie -> AuthenticationConstants.REMEMBER_ME_COOKIE_NAME.equals(cookie.getName()))
                 .findAny()

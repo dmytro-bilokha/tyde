@@ -1,7 +1,6 @@
 package com.dmytrobilokha.tyde.infra.exception;
 
-// TODO: consider making all these exceptions unchecked
-public class InvalidInputException extends Exception {
+public class InvalidInputException extends RuntimeException {
 
     public InvalidInputException(String message) {
         super(message);
