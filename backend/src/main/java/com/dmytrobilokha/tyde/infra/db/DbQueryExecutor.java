@@ -65,6 +65,7 @@ public class DbQueryExecutor {
         }
     }
 
+    // TODO: there is a big issue that this method is not aligned with selectObject on mapResultSet requirements
     public <T> List<T> selectList(SelectQuery<T> selectQuery) throws DbException {
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(selectQuery.getQueryString())) {

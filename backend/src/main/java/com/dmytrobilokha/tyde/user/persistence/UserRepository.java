@@ -1,6 +1,7 @@
 package com.dmytrobilokha.tyde.user.persistence;
 
 import com.dmytrobilokha.tyde.infra.db.DbQueryExecutor;
+import com.dmytrobilokha.tyde.infra.db.UserDataSource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -18,7 +19,7 @@ public class UserRepository {
     }
 
     @Inject
-    public UserRepository(DataSource userDataSource) {
+    public UserRepository(@UserDataSource DataSource userDataSource) {
         this.queryExecutor = new DbQueryExecutor(userDataSource);
     }
 

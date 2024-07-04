@@ -2,7 +2,6 @@ package com.dmytrobilokha.tyde.infra.db;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 
 import javax.sql.DataSource;
@@ -11,18 +10,20 @@ import javax.sql.DataSource;
 public class DbServicesProducer {
 
     @Resource(name = "jdbc/AppUserDB")
-    private DataSource dataSource;
+    private DataSource userDataSource;
+    @Resource(name = "jdbc/TydeDB")
+    private DataSource tydeDataSource;
 
-    @Dependent
+    // TODO: inject query executor instead of data source, repositories should not use data source
+    @UserDataSource
     @Produces
-    DbQueryExecutor produceDbQueryExecutor() {
-        return new DbQueryExecutor(dataSource);
+    DataSource produceUserDbDataSource() {
+        return userDataSource;
     }
 
-    @Dependent
     @Produces
-    DataSource produceDbDataSource() {
-        return dataSource;
+    DataSource produceTydeDbDataSource() {
+        return tydeDataSource;
     }
 
 }
