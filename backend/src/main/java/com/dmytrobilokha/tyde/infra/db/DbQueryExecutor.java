@@ -55,24 +55,31 @@ public class DbQueryExecutor {
     @CheckForNull
     public <T> T selectObject(SelectQuery<T> selectQuery) throws DbException {
         try (var connection = dataSource.getConnection();
-            var statement = connection.prepareStatement(selectQuery.getQueryString())) {
+             var statement = connection.prepareStatement(selectQuery.getQueryString())) {
             selectQuery.setParameters(statement);
             try (var resultSet = statement.executeQuery()) {
-                return selectQuery.mapResultSet(resultSet);
+                if (!resultSet.next()) {
+                    // Query didn't find any results
+                    return null;
+                }
+                var result = selectQuery.mapResultSet(resultSet);
+                if (!resultSet.isAfterLast()) {
+                    throw new DbException("Selecting object query got a list as result");
+                }
+                return result;
             }
         } catch (SQLException e) {
             throw new DbException("Failure while trying to execute select object query", e);
         }
     }
 
-    // TODO: there is a big issue that this method is not aligned with selectObject on mapResultSet requirements
     public <T> List<T> selectList(SelectQuery<T> selectQuery) throws DbException {
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(selectQuery.getQueryString())) {
             selectQuery.setParameters(statement);
             try (var resultSet = statement.executeQuery()) {
                 List<T> result = new ArrayList<>();
-                while (resultSet.next()) {
+                for (resultSet.next(); !resultSet.isAfterLast();) {
                     result.add(selectQuery.mapResultSet(resultSet));
                 }
                 return result;

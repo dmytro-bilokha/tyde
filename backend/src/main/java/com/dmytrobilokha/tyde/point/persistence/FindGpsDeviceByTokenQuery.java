@@ -19,17 +19,15 @@ public class FindGpsDeviceByTokenQuery implements SelectQuery<GpsDevice> {
         this.submissionToken = submissionToken;
     }
 
-    @CheckForNull
     @Override
     public GpsDevice mapResultSet(ResultSet resultSet) throws SQLException {
-        if (!resultSet.next()) {
-            return null;
-        }
-        return new GpsDevice(
+        var result = new GpsDevice(
                 resultSet.getLong("id"),
                 resultSet.getString("submission_token"),
                 resultSet.getString("description")
         );
+        resultSet.next();
+        return result;
     }
 
     @Override

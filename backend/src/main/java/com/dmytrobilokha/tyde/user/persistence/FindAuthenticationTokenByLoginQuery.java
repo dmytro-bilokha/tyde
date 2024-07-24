@@ -18,19 +18,17 @@ public class FindAuthenticationTokenByLoginQuery implements SelectQuery<Authenti
         this.login = login;
     }
 
-    @CheckForNull
     @Override
     public AuthenticationToken mapResultSet(ResultSet resultSet) throws SQLException {
-        if (!resultSet.next()) {
-            return null;
-        }
-        return new AuthenticationToken(
+        var result = new AuthenticationToken(
                 resultSet.getLong("id"),
                 resultSet.getLong("app_user_id"),
                 resultSet.getString("login"),
                 resultSet.getString("password_hash"),
                 resultSet.getTimestamp("valid_to").toLocalDateTime()
         );
+        resultSet.next();
+        return result;
     }
 
     @Override

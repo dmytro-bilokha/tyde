@@ -19,14 +19,15 @@ public class FindUserReadableGpsDevicesQuery implements SelectQuery<GpsDevice> {
         this.userId = userId;
     }
 
-    @CheckForNull
     @Override
     public GpsDevice mapResultSet(ResultSet resultSet) throws SQLException {
-        return new GpsDevice(
+        var result = new GpsDevice(
                 resultSet.getLong("id"),
                 resultSet.getString("submission_token"),
                 resultSet.getString("description")
         );
+        resultSet.next();
+        return result;
     }
 
     @Override

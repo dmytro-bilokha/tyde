@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 public interface SelectQuery<T> extends UpsertQuery {
 
-    @CheckForNull
     T mapResultSet(ResultSet resultSet) throws SQLException;
 
 }

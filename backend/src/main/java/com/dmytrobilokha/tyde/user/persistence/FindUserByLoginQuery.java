@@ -22,12 +22,8 @@ public class FindUserByLoginQuery implements SelectQuery<User> {
         this.login = login;
     }
 
-    @CheckForNull
     @Override
     public User mapResultSet(ResultSet resultSet) throws SQLException {
-        if (!resultSet.next()) {
-            return null;
-        }
         long id = resultSet.getLong("id");
         var passwordHash = resultSet.getString("password_hash");
         var roles = new HashSet<String>();
