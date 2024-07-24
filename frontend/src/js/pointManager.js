@@ -49,7 +49,7 @@ define([
 
           this.onPingTimeout = () => {
             console.error("Websocket ping timed out, closing the connection");
-            this.ws.close();
+            this.shutdownWsConnection();
           };
 
           this.sendPing = () => {
@@ -69,10 +69,14 @@ define([
             this.pingIntervalId = setInterval(this.sendPing, AppConstants.PING_INTERVAL_MS);
           };
 
-          this.ws.onclose = () => {
+          this.shutdownWsConnection = () => {
             if ("pingIntervalId" in this) {
               clearInterval(this.pingIntervalId);
             }
+            if ("pingTimeoutId" in this) {
+              clearTimeout(this.pingTimeoutId);
+            }
+            this.ws.close();
             if (this.closeRequested) {
               console.log("Websocket connection closed, as requested");
               this.closeRequested = false;
@@ -90,7 +94,7 @@ define([
 
           this.ws.onerror = (err) => {
             console.error("Websocket connection error: ", err.message);
-            this.ws.close();
+            this.shutdownWsConnection();
           };
 
           this.ws.onmessage = (evt) => {
@@ -140,7 +144,7 @@ define([
             this.points.pop();
           }
           if ("ws" in this) {
-            this.ws.close();
+            this.shutdownWsConnection();
           } else {
             this.closeRequested = false;
           }
