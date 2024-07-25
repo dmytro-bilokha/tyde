@@ -2,7 +2,6 @@ package com.dmytrobilokha.tyde.user.persistence;
 
 import com.dmytrobilokha.tyde.infra.db.SelectQuery;
 
-import javax.annotation.CheckForNull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

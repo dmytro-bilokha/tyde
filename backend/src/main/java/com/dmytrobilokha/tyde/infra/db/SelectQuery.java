@@ -1,6 +1,5 @@
 package com.dmytrobilokha.tyde.infra.db;
 
-import javax.annotation.CheckForNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

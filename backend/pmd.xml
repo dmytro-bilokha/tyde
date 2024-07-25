@@ -109,8 +109,6 @@
     <rule ref="category/java/codestyle.xml/NoPackage" />
     <!-- No uppper-case letters in the package name -->
     <rule ref="category/java/codestyle.xml/PackageCase" />
-    <!-- Don't declare variables too early -->
-    <rule ref="category/java/codestyle.xml/PrematureDeclaration" />
     <!-- Don't overuse static imports -->
     <rule ref="category/java/codestyle.xml/TooManyStaticImports" />
     <!-- Avoid annotation value element -->
