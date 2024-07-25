@@ -19,8 +19,8 @@ public class UserRepository {
     }
 
     @Inject
-    public UserRepository(@UserDataSource DataSource userDataSource) {
-        this.queryExecutor = new DbQueryExecutor(userDataSource);
+    public UserRepository(@UserDataSource DbQueryExecutor dbQueryExecutor) {
+        this.queryExecutor = dbQueryExecutor;
     }
 
     @CheckForNull

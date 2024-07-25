@@ -5,7 +5,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import javax.annotation.CheckForNull;
-import javax.sql.DataSource;
 import java.util.List;
 
 @ApplicationScoped
@@ -18,8 +17,8 @@ public class GpsDeviceRepository {
     }
 
     @Inject
-    public GpsDeviceRepository(DataSource pointsDataSource) {
-        this.queryExecutor = new DbQueryExecutor(pointsDataSource);
+    public GpsDeviceRepository(DbQueryExecutor queryExecutor) {
+        this.queryExecutor = queryExecutor;
     }
 
     public List<GpsDevice> findUserReadableDevices(long userId) {

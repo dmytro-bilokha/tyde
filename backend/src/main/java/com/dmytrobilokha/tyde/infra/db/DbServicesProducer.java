@@ -14,16 +14,15 @@ public class DbServicesProducer {
     @Resource(name = "jdbc/TydeDB")
     private DataSource tydeDataSource;
 
-    // TODO: inject query executor instead of data source, repositories should not use data source
     @UserDataSource
     @Produces
-    DataSource produceUserDbDataSource() {
-        return userDataSource;
+    DbQueryExecutor produceUserDbQueryExecutor() {
+        return new DbQueryExecutor(userDataSource);
     }
 
     @Produces
-    DataSource produceTydeDbDataSource() {
-        return tydeDataSource;
+    DbQueryExecutor produceTydeDbQueryExecutor() {
+        return new DbQueryExecutor(tydeDataSource);
     }
 
 }
