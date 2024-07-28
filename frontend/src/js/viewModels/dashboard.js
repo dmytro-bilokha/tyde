@@ -76,7 +76,9 @@ define([
 								lastMarker.setStyle(this.pointOptions);
 							}
 							const circleMarker = L.circleMarker(pointLatLng, this.lastPointOptions);
-							circleMarker.bindPopup(new Date(point.timestamp).toISOString());
+							const timestampUtc = new Date(point.timestamp);
+							const timestampLocal = new Date(timestampUtc.getTime() - timestampUtc.getTimezoneOffset() * 60 * 1000);
+							circleMarker.bindPopup(timestampLocal.toISOString());
 							circleMarker.addTo(this.map);
 							this.markers.push(circleMarker);
 							this.map.setView(pointLatLng, 13);
