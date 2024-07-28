@@ -56,7 +56,7 @@ public class PointEndpoint {
 
     @OnClose
     public void onClose(Session session) {
-        LOG.info("User '{}' closed connection", getUsername(session));
+        LOG.info("Closing connection for '{}'", getUsername(session));
         pointNotificationSender.unsubscribeAll(session);
     }
 
@@ -73,6 +73,7 @@ public class PointEndpoint {
             // If ping message receive, response with empty result, just for client to know, connection is still OK
             result.setPoints(List.of());
             session.getAsyncRemote().sendObject(result);
+            LOG.info("Sent pong message to the user '{}'", getUsername(session));
             return;
         }
         var pointsRequest = parseRequestString(requestString);
