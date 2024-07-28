@@ -79,9 +79,13 @@ public class DbQueryExecutor {
             selectQuery.setParameters(statement);
             try (var resultSet = statement.executeQuery()) {
                 List<T> result = new ArrayList<>();
-                for (resultSet.next(); !resultSet.isAfterLast();) {
-                    result.add(selectQuery.mapResultSet(resultSet));
+                if (!resultSet.next()) {
+                    // The result is empty
+                    return result;
                 }
+                do {
+                    result.add(selectQuery.mapResultSet(resultSet));
+                } while (!resultSet.isAfterLast());
                 return result;
             }
         } catch (SQLException e) {
