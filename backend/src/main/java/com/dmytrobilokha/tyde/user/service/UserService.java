@@ -36,9 +36,8 @@ public class UserService implements UserServiceMXBean {
         passwordHasher.initialize(
                 Map.of(
                         "Pbkdf2PasswordHash.Algorithm", "PBKDF2WithHmacSHA512",
-                        // TODO: uncomment after debugging, remove the following line
-                        // "Pbkdf2PasswordHash.Iterations", "350000",
-                        "Pbkdf2PasswordHash.Iterations", "35",
+                        "Pbkdf2PasswordHash.Iterations", "350000",
+                        // For local debugging "Pbkdf2PasswordHash.Iterations", "35",
                         "Pbkdf2PasswordHash.SaltSizeBytes", "32",
                         "Pbkdf2PasswordHash.KeySizeBytes", "32"
                 )
