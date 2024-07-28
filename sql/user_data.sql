@@ -1,3 +1,8 @@
+CREATE USER 'user_data'@'%' IDENTIFIED BY 'SET_THE_PASSWORD';
+CREATE DATABASE user_data;
+GRANT ALL ON user_data.* TO 'user_data'@'%';
+USE user_data;
+
 CREATE TABLE app_user
 ( id BIGINT NOT NULL AUTO_INCREMENT
 , login VARCHAR(120) NOT NULL
@@ -31,4 +36,6 @@ CREATE TABLE authentication_token
 , CONSTRAINT authentication_token_login_uq UNIQUE (login)
 , CONSTRAINT authentication_token_user_fk FOREIGN KEY (app_user_id) REFERENCES app_user (id)
 );
+
+INSERT INTO app_role (name) VALUES ('tyde_user');
 
