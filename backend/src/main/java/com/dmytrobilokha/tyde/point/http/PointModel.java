@@ -5,6 +5,7 @@ import java.time.Instant;
 
 public class PointModel {
 
+    private long id;
     private BigDecimal lat;
     private BigDecimal lon;
     private Instant timestamp;
@@ -12,6 +13,14 @@ public class PointModel {
     private BigDecimal altitude;
     private BigDecimal direction;
     private BigDecimal accuracy;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public BigDecimal getLat() {
         return lat;

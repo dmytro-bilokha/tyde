@@ -6,7 +6,9 @@ import com.dmytrobilokha.tyde.point.PointMapper;
 import com.dmytrobilokha.tyde.point.service.GpsDeviceAccessControlService;
 import com.dmytrobilokha.tyde.point.service.PointService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
@@ -18,11 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-@ServerEndpoint(value = "/point-endpoint", encoders = {JsonEncoder.class})
+@ServerEndpoint(value = "/point-endpoint", encoders = {JsonEncoder.class}, decoders = {PointsRequestDecoder.class})
 public class PointEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(PointEndpoint.class);
-    private static final String PING_MESSAGE = "PING";
 
     private PointService pointService;
     private PointNotificationSender pointNotificationSender;
@@ -66,47 +67,19 @@ public class PointEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, @NotBlank String requestString) throws InvalidInputException {
-        LOG.info("Received a message '{}' from the user '{}'", requestString, getUsername(session));
+    public void onMessage(Session session, @NotNull @Valid PointsRequest pointsRequest) throws InvalidInputException {
+        LOG.info("Received a message '{}' from the user '{}'", pointsRequest, getUsername(session));
         var result = new LastPointsModel();
-        if (PING_MESSAGE.equals(requestString)) {
-            // If ping message receive, response with empty result, just for client to know, connection is still OK
-            result.setPoints(List.of());
-            session.getAsyncRemote().sendObject(result);
-            LOG.info("Sent pong message to the user '{}'", getUsername(session));
-            return;
-        }
-        var pointsRequest = parseRequestString(requestString);
-        accessControlService.checkUserAccess(session.getUserPrincipal(), pointsRequest.gpsDeviceId());
-        result.setPoints(pointService.getLastPoints(pointsRequest.gpsDeviceId(), pointsRequest.quantity())
+        accessControlService.checkUserAccess(session.getUserPrincipal(), pointsRequest.getGpsDeviceId());
+        result.setPoints(pointService.getLastPoints(
+                        pointsRequest.getGpsDeviceId(),
+                        pointsRequest.getLastPointId(),
+                        pointsRequest.getQuantity())
                 .stream()
                 .map(pointMapper::mapToPointModel)
                 .toList());
         session.getAsyncRemote().sendObject(result);
-        pointNotificationSender.subscribe(pointsRequest.gpsDeviceId(), session);
+        pointNotificationSender.subscribe(pointsRequest.getGpsDeviceId(), session);
     }
-
-    private PointsRequest parseRequestString(String requestString) throws InvalidInputException {
-        int separatorIndex = requestString.indexOf(':');
-        if (separatorIndex < 1 || separatorIndex + 1 == requestString.length()) {
-            throw new InvalidInputException(
-                    "The request string should contain two parts: GPS device id and number of points");
-        }
-        long gpsId;
-        try {
-            gpsId = Long.parseLong(requestString, 0, separatorIndex, 10);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputException("Unable to parse GPS device id from request: " + requestString, e);
-        }
-        int quantity;
-        try {
-            quantity = Integer.parseUnsignedInt(requestString, separatorIndex + 1, requestString.length(), 10);
-        } catch (NumberFormatException e) {
-            throw new InvalidInputException("Unable to parse quantity from request: " + requestString, e);
-        }
-        return new PointsRequest(gpsId, quantity);
-    }
-
-    record PointsRequest(long gpsDeviceId, int quantity) { }
 
 }

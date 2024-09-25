@@ -5,18 +5,22 @@ import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @ApplicationScoped
 public class PointService {
 
     private static final int MAX_CAPACITY = 100;
+    private static final Comparator<Point> POINT_COMPARATOR = Comparator.comparingLong(Point::getId);
 
-    private final Map<Long, LinkedList<Point>> pointStorage = new HashMap<>();
+    private final Map<Long, TreeSet<Point>> pointStorage = new HashMap<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private Event<PointRegisteredEvent> event;
@@ -31,9 +35,10 @@ public class PointService {
     public void registerPoint(Point point) {
         try {
             lock.writeLock().lock();
-            var points = pointStorage.computeIfAbsent(point.getGpsDeviceId(), id -> new LinkedList<>());
+            var points = pointStorage.computeIfAbsent(
+                    point.getGpsDeviceId(), gpsDeviceId -> new TreeSet<>(POINT_COMPARATOR));
             if (points.size() >= MAX_CAPACITY) {
-                points.removeFirst();
+                points.pollFirst();
             }
             points.add(point);
             event.fireAsync(new PointRegisteredEvent(point));
@@ -42,7 +47,7 @@ public class PointService {
         }
     }
 
-    public List<Point> getLastPoints(long gpsDeviceId, int quantity) {
+    public List<Point> getLastPoints(long gpsDeviceId, long lastId, int limit) {
         var lastPoints = new ArrayList<Point>();
         try {
             lock.readLock().lock();
@@ -50,9 +55,11 @@ public class PointService {
             if (points == null) {
                 return lastPoints;
             }
-            for (var iterator = points.listIterator(points.size());
-                 iterator.hasPrevious() && lastPoints.size() < quantity;) {
-                var point = iterator.previous();
+            var referencePoint = new Point();
+            referencePoint.setId(lastId);
+            for (var iterator = points.tailSet(referencePoint, false).descendingIterator();
+                 iterator.hasNext() && lastPoints.size() < limit;) {
+                var point = iterator.next();
                 lastPoints.add(point);
             }
             return lastPoints;

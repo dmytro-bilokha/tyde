@@ -5,6 +5,7 @@ import java.time.Instant;
 
 public class Point {
 
+    private long id;
     private long gpsDeviceId;
     private BigDecimal lat;
     private BigDecimal lon;
@@ -15,6 +16,14 @@ public class Point {
     private BigDecimal accuracy;
     private String provider;
     private Instant serverTimestamp;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getGpsDeviceId() {
         return gpsDeviceId;

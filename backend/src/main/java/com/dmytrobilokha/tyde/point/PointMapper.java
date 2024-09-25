@@ -9,10 +9,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicLong;
 
 @ApplicationScoped
 public class PointMapper {
 
+    private static final AtomicLong lastPointId = new AtomicLong();
     private GpsDeviceRepository gpsDeviceRepository;
 
     public PointMapper() {
@@ -26,6 +28,7 @@ public class PointMapper {
 
     public PointModel mapToPointModel(Point point) {
         var pointModel = new PointModel();
+        pointModel.setId(point.getId());
         pointModel.setLat(point.getLat());
         pointModel.setLon(point.getLon());
         pointModel.setTimestamp(point.getClientTimestamp());
@@ -42,6 +45,7 @@ public class PointMapper {
             throw new InvalidInputException("Unknown GPS device token provided");
         }
         var point = new Point();
+        point.setId(lastPointId.incrementAndGet());
         point.setGpsDeviceId(gpsDevice.id());
         point.setLat(pointInput.getLat());
         point.setLon(pointInput.getLon());

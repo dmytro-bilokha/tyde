@@ -52,8 +52,22 @@ define([
             this.shutdownWsConnection();
           };
 
+          this.requestPoints = () => {
+            const existingPointsArray = this.points();
+            const lastId = existingPointsArray.length > 0
+              ? existingPointsArray[existingPointsArray.length - 1].id
+              : 0;
+            this.ws.send(
+              JSON.stringify(
+                { gpsDeviceId: this.gpsDeviceId,
+                  lastPointId: lastId,
+                  quantity: AppConstants.POINTS_LIMIT
+                }
+            ));
+          };
+
           this.sendPing = () => {
-            this.ws.send(AppConstants.PING_MESSAGE);
+            this.requestPoints();
             this.pingTimeoutId = setTimeout(this.onPingTimeout, AppConstants.PING_TIMEOUT_MS);
           };
 
@@ -65,7 +79,7 @@ define([
 
           this.ws.onopen = () => {
             console.log("Websocket connection openned");
-            this.ws.send(`${this.gpsDeviceId}:${AppConstants.POINTS_LIMIT}`);
+            this.requestPoints();
             this.pingIntervalId = setInterval(this.sendPing, AppConstants.PING_INTERVAL_MS);
           };
 
@@ -106,6 +120,7 @@ define([
             const payload = JSON.parse(evt.data);
             const newPoints = payload.points
               .map(payloadPoint => ({
+                id: payloadPoint.id,
                 lat: payloadPoint.lat,
                 lon: payloadPoint.lon,
                 timestamp: Date.parse(payloadPoint.timestamp),
@@ -114,13 +129,13 @@ define([
                 direction: payloadPoint.direction,
                 accuracy: payloadPoint.accuracy
               }))
-              .sort((aPoint, bPoint) => aPoint.timestamp - bPoint.timestamp);
+              .sort((aPoint, bPoint) => aPoint.id - bPoint.id);
             const existingPointsArray = this.points();
-            let lastTimestamp = existingPointsArray.length > 0
-              ? existingPointsArray[existingPointsArray.length - 1].timestamp
+            let lastId = existingPointsArray.length > 0
+              ? existingPointsArray[existingPointsArray.length - 1].id
               : 0;
             for (const newPoint of newPoints) {
-              if (newPoint.timestamp > lastTimestamp) {
+              if (newPoint.id > lastId) {
                 this.points.push(newPoint);
                 if (this.points().length > AppConstants.POINTS_LIMIT) {
                   this.points.splice(0, 1);
