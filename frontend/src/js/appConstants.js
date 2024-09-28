@@ -15,6 +15,7 @@ define([],
         this.addConstant('POINTS_LIMIT', 20);
         this.addConstant('PING_INTERVAL_MS', 30000);
         this.addConstant('PING_TIMEOUT_MS', 15000);
+        this.addConstant('MAX_RECONNECTS', 5);
         this.addConstant('PING_MESSAGE', 'PING');
         this.addConstant('CONTEXT_PATH', '/tyde');
         this.addConstant('LOGOUT_URL', `${this.CONTEXT_PATH}/logout`);

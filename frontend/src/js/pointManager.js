@@ -10,6 +10,7 @@ define([
       constructor() {
 
         this.points = ko.observableArray([]);
+        this.retryCount = 0;
 
         this.fetchAvailableDevices = (devicesObservableArray) => {
           return $.ajax({
@@ -36,11 +37,9 @@ define([
           });
         };
 
-        this.connect = (deviceId) => {
-          this.disconnect();
-          this.gpsDeviceId = parseInt(deviceId);
+        this.startWsConnection = () => {
           if (isNaN(this.gpsDeviceId)) {
-            // If value is not a valid int, we only disconnect and don't do anything
+            // If value is not a valid int, we don't do anything
             return;
           }
           const webSocketUrl = new URL(AppConstants.WEB_SOCKET_URL, location.href);
@@ -48,8 +47,16 @@ define([
           this.ws = new WebSocket(webSocketUrl);
 
           this.onPingTimeout = () => {
-            console.error("Websocket ping timed out, closing the connection");
-            this.shutdownWsConnection();
+            if (this.retryCount > AppConstants.MAX_RECONNECTS) {
+              console.error("Websocket reconnection failed, closing the connection");
+              this.shutdownWsConnection();
+            } else {
+              this.retryCount++;
+              console.log("Websocket ping failed, trying to reconnect");
+              this.closeRequested = true;
+              this.shutdownWsConnection();
+              this.startWsConnection();
+            }
           };
 
           this.requestPoints = () => {
@@ -75,6 +82,7 @@ define([
             if ("pingTimeoutId" in this) {
               clearTimeout(this.pingTimeoutId);
             }
+            this.retryCount = 0;
           };
 
           this.ws.onopen = () => {
@@ -143,6 +151,12 @@ define([
               }
             }
           };
+        };
+
+        this.connect = (deviceId) => {
+          this.disconnect();
+          this.gpsDeviceId = parseInt(deviceId);
+          this.startWsConnection();
         };
 
         this.init = (onPointsChange) => {
