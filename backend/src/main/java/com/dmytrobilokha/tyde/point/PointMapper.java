@@ -1,8 +1,8 @@
 package com.dmytrobilokha.tyde.point;
 
 import com.dmytrobilokha.tyde.infra.exception.InvalidInputException;
-import com.dmytrobilokha.tyde.point.http.PointInput;
-import com.dmytrobilokha.tyde.point.http.PointModel;
+import com.dmytrobilokha.tyde.point.jaxrs.PointInput;
+import com.dmytrobilokha.tyde.point.jaxrs.PointModel;
 import com.dmytrobilokha.tyde.point.persistence.GpsDeviceRepository;
 import com.dmytrobilokha.tyde.point.service.Point;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,7 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @ApplicationScoped
 public class PointMapper {
 
+    @SuppressWarnings("PMD.FieldNamingConventions")
     private static final AtomicLong lastPointId = new AtomicLong();
+
     private GpsDeviceRepository gpsDeviceRepository;
 
     public PointMapper() {

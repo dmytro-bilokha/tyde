@@ -1,6 +1,6 @@
 package com.dmytrobilokha.tyde.infra.servlet;
 
-import com.dmytrobilokha.tyde.infra.rest.ExceptionResponse;
+import com.dmytrobilokha.tyde.infra.jaxrs.ExceptionResponse;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.RequestDispatcher;

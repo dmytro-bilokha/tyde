@@ -1,16 +1,12 @@
 package com.dmytrobilokha.tyde.point.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Event;
-import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -23,14 +19,7 @@ public class PointService {
     private final Map<Long, TreeSet<Point>> pointStorage = new HashMap<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private Event<PointRegisteredEvent> event;
-
     public PointService() { }
-
-    @Inject
-    public PointService(Event<PointRegisteredEvent> event) {
-        this.event = event;
-    }
 
     public void registerPoint(Point point) {
         try {
@@ -41,7 +30,6 @@ public class PointService {
                 points.pollFirst();
             }
             points.add(point);
-            event.fireAsync(new PointRegisteredEvent(point));
         } finally {
             lock.writeLock().unlock();
         }

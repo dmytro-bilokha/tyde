@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.point.http;
+package com.dmytrobilokha.tyde.point.jaxrs;
 
 import java.util.ArrayList;
 import java.util.List;

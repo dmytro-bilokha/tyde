@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.infra.rest;
+package com.dmytrobilokha.tyde.infra.jaxrs;
 
 import com.dmytrobilokha.tyde.infra.exception.InternalApplicationException;
 import com.dmytrobilokha.tyde.infra.exception.InvalidInputException;

@@ -1,40 +1,26 @@
-package com.dmytrobilokha.tyde.point.http;
-
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.FormParam;
+package com.dmytrobilokha.tyde.point.jaxrs;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
-public class PointInput {
+public class PointModel {
 
-    @FormParam("lat")
-    @NotNull
+    private long id;
     private BigDecimal lat;
-    @FormParam("lon")
-    @NotNull
     private BigDecimal lon;
-    @FormParam("timestamp")
-    @NotNull
-    private Long timestamp;
-    @FormParam("speed")
-    @NotNull
+    private Instant timestamp;
     private BigDecimal speed;
-    @FormParam("altitude")
-    @NotNull
     private BigDecimal altitude;
-    @FormParam("direction")
-    @NotNull
     private BigDecimal direction;
-    @FormParam("accuracy")
-    @NotNull
     private BigDecimal accuracy;
-    @FormParam("provider")
-    @NotNull
-    private String provider;
-    @FormParam("token")
-    @NotEmpty
-    private String token;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public BigDecimal getLat() {
         return lat;
@@ -52,11 +38,11 @@ public class PointInput {
         this.lon = lon;
     }
 
-    public Long getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -90,21 +76,5 @@ public class PointInput {
 
     public void setAccuracy(BigDecimal accuracy) {
         this.accuracy = accuracy;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

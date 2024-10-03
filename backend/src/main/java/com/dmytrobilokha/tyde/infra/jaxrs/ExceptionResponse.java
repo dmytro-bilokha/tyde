@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.infra.rest;
+package com.dmytrobilokha.tyde.infra.jaxrs;
 
 public class ExceptionResponse {
 

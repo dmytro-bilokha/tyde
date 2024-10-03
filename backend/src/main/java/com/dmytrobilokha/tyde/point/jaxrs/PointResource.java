@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.point.http;
+package com.dmytrobilokha.tyde.point.jaxrs;
 
 import com.dmytrobilokha.tyde.infra.exception.InvalidInputException;
 import com.dmytrobilokha.tyde.point.PointMapper;

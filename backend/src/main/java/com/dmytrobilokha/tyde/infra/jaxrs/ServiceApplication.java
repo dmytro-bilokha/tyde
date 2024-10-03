@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.infra.rest;
+package com.dmytrobilokha.tyde.infra.jaxrs;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

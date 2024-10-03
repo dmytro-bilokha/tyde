@@ -1,4 +1,4 @@
-package com.dmytrobilokha.tyde.user.rest;
+package com.dmytrobilokha.tyde.user.jaxrs;
 
 public class UserDataResponse {
 

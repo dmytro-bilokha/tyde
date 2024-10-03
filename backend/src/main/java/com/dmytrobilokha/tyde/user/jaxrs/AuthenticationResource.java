@@ -1,7 +1,7 @@
-package com.dmytrobilokha.tyde.user.rest;
+package com.dmytrobilokha.tyde.user.jaxrs;
 
 import com.dmytrobilokha.tyde.infra.exception.InternalApplicationException;
-import com.dmytrobilokha.tyde.infra.rest.ExceptionResponse;
+import com.dmytrobilokha.tyde.infra.jaxrs.ExceptionResponse;
 import com.dmytrobilokha.tyde.user.AuthenticationConstants;
 import com.dmytrobilokha.tyde.user.service.UserService;
 import jakarta.enterprise.context.RequestScoped;
