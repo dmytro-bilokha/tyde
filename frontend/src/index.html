@@ -48,7 +48,7 @@
           </div>
         </div>
       </header>
-      <div role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
+      <div id="mainBody" role="main" class="oj-web-applayout-max-width oj-web-applayout-content">
         <oj-c-message-toast type="section" position="top" data="[[messagesProvider]]" on-oj-close="[[closeMessage]]"></oj-c-message-toast>
         <div id="div1">
           <oj-module config="[[ModuleElementUtils.createConfig({name: userLogin() === '' ? 'login' : 'dashboard'})]]"></oj-module>

@@ -37,19 +37,26 @@ define([
           });
         };
 
-        this.connect = (deviceId) => {
+        this.connect = (deviceId, timePeriod) => {
           this.disconnect();
           this.gpsDeviceId = parseInt(deviceId);
           if (isNaN(this.gpsDeviceId)) {
             // If value is not a valid int, we don't do anything
             return;
           }
+          this.timePeriod = timePeriod;
           this.fetchLastPoints();
         };
 
         this.fetchLastPoints = () => {
           if ("fetchLastPointsTimeoutId" in this) {
             clearTimeout(this.fetchLastPointsTimeoutId);
+          }
+          if (!isNaN(this.timePeriod)) {
+            const now = new Date();
+            this.points.remove(
+              (point) => point.timestamp + this.timePeriod * 60 * 1000 < now
+            );
           }
           const existingPointsArray = this.points();
           const lastPointId = existingPointsArray.length > 0

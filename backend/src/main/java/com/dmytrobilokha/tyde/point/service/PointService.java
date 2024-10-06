@@ -2,18 +2,22 @@ package com.dmytrobilokha.tyde.point.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @ApplicationScoped
 public class PointService {
 
-    private static final int MAX_CAPACITY = 100;
+    private static final int MAX_CAPACITY = 10000;
+    private static final Duration MAX_DURATION = Duration.ofHours(48L);
     private static final Comparator<Point> POINT_COMPARATOR = Comparator.comparingLong(Point::getId);
 
     private final Map<Long, TreeSet<Point>> pointStorage = new HashMap<>();
@@ -26,12 +30,25 @@ public class PointService {
             lock.writeLock().lock();
             var points = pointStorage.computeIfAbsent(
                     point.getGpsDeviceId(), gpsDeviceId -> new TreeSet<>(POINT_COMPARATOR));
-            if (points.size() >= MAX_CAPACITY) {
-                points.pollFirst();
-            }
+            cleanUpPoints(points);
             points.add(point);
         } finally {
             lock.writeLock().unlock();
+        }
+    }
+
+    private void cleanUpPoints(NavigableSet<Point> points) {
+        while (points.size() >= MAX_CAPACITY) {
+            points.pollFirst();
+        }
+        var earliestAllowed = Instant.now().minus(MAX_DURATION);
+        for (var iterator = points.iterator(); iterator.hasNext();) {
+            var point = iterator.next();
+            if (point.getServerTimestamp().isBefore(earliestAllowed)) {
+                iterator.remove();
+            } else {
+                break;
+            }
         }
     }
 

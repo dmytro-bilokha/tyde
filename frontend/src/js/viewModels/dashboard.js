@@ -5,6 +5,7 @@ define([
 	'leaflet',
 	'../accUtils',
 	'oj-c/select-single',
+  'ojs/ojformlayout',
 ],
 	function (
 		ko,
@@ -22,6 +23,18 @@ define([
 				this.deviceProvider = new ArrayDataProvider(this.devices, {
 					keyAttributes: 'value',
 				});
+				this.selectedGpsDeviceId = ko.observable();
+
+				this.timePeriods = [
+					{ value: 60, label: '1 hour' },
+					{ value: 120, label: '2 hours' },
+					{ value: 600, label: '10 hours' },
+					{ value: 1440, label: '24 hours' }
+				];
+				this.timePeriodProvider = new ArrayDataProvider(this.timePeriods, {
+					keyAttributes: 'value',
+				});
+				this.selectedPeriod = ko.observable(120);
 
 				this.lastMarker = null;
 				this.line = null;
@@ -51,7 +64,7 @@ define([
 					pointManager.fetchAvailableDevices(this.devices);
 					console.log("Map connecting...");
 					accUtils.announce('Map page loaded.');
-					this.map = L.map('map').setView([52.7297347, 4.436961], 13);
+					this.map = L.map('map', { zoomControl: false }).setView([52.374450758981276, 4.895229400019448], 13);
 					L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 						maxZoom: 19,
 						attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -62,7 +75,11 @@ define([
 				};
 
 				this.onGpsDeviceChange = (deviceChangeEvent) => {
-					pointManager.connect(deviceChangeEvent.detail.value);
+					pointManager.connect(deviceChangeEvent.detail.value, this.selectedPeriod());
+				};
+
+				this.onTimePeriodChange = (periodChangeEvent) => {
+					pointManager.connect(this.selectedGpsDeviceId(), this.selectedPeriod());
 				};
 
 				this.onPointsChange = (changes) => {
@@ -81,7 +98,7 @@ define([
 							circleMarker.bindPopup(timestampLocal.toISOString());
 							circleMarker.addTo(this.map);
 							this.markers.push(circleMarker);
-							this.map.setView(pointLatLng, 13);
+							this.map.setView(pointLatLng);
 						} else if (change.status === 'deleted') {
 							this.pointsLatLng.splice(change.index, 1);
 							this.map.removeLayer(this.markers[change.index]);

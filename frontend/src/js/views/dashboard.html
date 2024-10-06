@@ -1,8 +1,22 @@
-<div class="oj-hybrid-padding">
-	<oj-c-select-single
-		data="[[deviceProvider]]"
-		item-text="label"
-		on-value-changed="[[onGpsDeviceChange]]"
-		label-hint="GPS Device"></oj-c-select-single>
+<div id="map-form-container">
+	<oj-form-layout
+		id="mapForm"
+		max-columns="2"
+		user-assistance-density="compact">
+		<oj-c-select-single
+			id="device-selector"
+			data="[[deviceProvider]]"
+			item-text="label"
+			on-value-changed="[[onGpsDeviceChange]]"
+			label-hint="GPS device"
+			value="{{selectedGpsDeviceId}}"></oj-c-select-single>
+		<oj-c-select-single
+			id="period-selector"
+			data="[[timePeriodProvider]]"
+			item-text="label"
+			on-value-changed="[[onTimePeriodChange]]"
+			label-hint="Time period"
+			value="{{selectedPeriod}}"></oj-c-select-single>
+	</oj-form-layout>
 	<div id="map"></div>
 </div>
