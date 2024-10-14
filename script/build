@@ -30,7 +30,7 @@ find "${be_dir}/target" -name "${app_name}*.war" \
     throw_error "FAILED TO UNPACK THE WAR FILE"
 cp -r "${fe_dir}/web/" "./" ||\
     throw_error "FAILED TO COPY FRONTEND FILES"
-cd "${build_dir}" && zip -r ../${app_name}.war * ||\
+cd "${build_dir}" && rm -f ../${app_name}.war && zip -r ../${app_name}.war * ||\
     throw_error "FAILED TO CREATE A WAR ARCHIVE"
 echo "Complete package is ${base_dir}/${app_name}.war file"
 echo "---- SUCCESS ----"
