@@ -52,17 +52,12 @@ define([
           if ("fetchLastPointsTimeoutId" in this) {
             clearTimeout(this.fetchLastPointsTimeoutId);
           }
-          const now = new Date();
-          const earliestAllowed = now - this.timePeriod * 60 * 1000;
-          this.points.remove(
-            (point) => point.timestamp < earliestAllowed
-          );
           const existingPointsArray = this.points();
           const requestTimestamp = existingPointsArray.length > 0
             ? existingPointsArray[existingPointsArray.length - 1].timestamp + 1 // add 1 ms to prevent getting the same point multiple times
-            : earliestAllowed;
+            : 0;
           return $.ajax({
-            url: `${AppConstants.GPS_DEVICE_URL}/${this.gpsDeviceId}/point?fromTimestamp=${requestTimestamp}`,
+            url: `${AppConstants.GPS_DEVICE_URL}/${this.gpsDeviceId}/point?fromTimestamp=${requestTimestamp}&lastMinutes=${this.timePeriod}`,
           }).done((response) => {
             const newPoints = response.points
               .map(payloadPoint => ({
@@ -76,6 +71,10 @@ define([
                 accuracy: payloadPoint.accuracy
               }))
               .sort((aPoint, bPoint) => aPoint.timestamp - bPoint.timestamp);
+            const earliestAllowed = response.earliestPossibleTimestamp;
+            this.points.remove(
+              (point) => point.timestamp < earliestAllowed
+            );
             for (const newPoint of newPoints) {
               this.points.push(newPoint);
             }

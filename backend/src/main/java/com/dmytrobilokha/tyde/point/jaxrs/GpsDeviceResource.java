@@ -20,6 +20,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.SecurityContext;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RequestScoped
 @Path("gps-device")
@@ -64,14 +65,21 @@ public class GpsDeviceResource {
             // TODO: add proper error messages
             @PathParam("gpsDeviceId") @NotNull @Min(0) Long gpsDeviceId,
             @QueryParam("fromTimestamp") @NotNull @Min(0) @Max(YEAR_2124_MILLIS) Long fromTimestamp,
+            @QueryParam("lastMinutes") @NotNull @Min(0) @Max(48 * 60) Long lastMinutes,
             @Context SecurityContext securityContext
     ) throws InvalidInputException {
         accessControlService.checkUserAccess(securityContext.getUserPrincipal(), gpsDeviceId);
         var response = new LastPointsModel();
-        response.setPoints(pointService.fetchLastPoints(gpsDeviceId, Instant.ofEpochMilli(fromTimestamp))
+        var lastMinutesInstant = Instant.now().minus(lastMinutes, ChronoUnit.MINUTES);
+        var fromTimestampInstant = Instant.ofEpochMilli(fromTimestamp);
+        var effectiveInstant = fromTimestampInstant.isAfter(lastMinutesInstant)
+                ? fromTimestampInstant
+                : lastMinutesInstant;
+        response.setPoints(pointService.fetchLastPoints(gpsDeviceId, effectiveInstant)
                 .stream()
                 .map(pointMapper::mapToPointModel)
                 .toList());
+        response.setEarliestPossibleTimestamp(lastMinutesInstant.toEpochMilli());
         return response;
     }
 
