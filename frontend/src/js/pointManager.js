@@ -19,7 +19,7 @@ define([
             devicesObservableArray.removeAll();
             response.availableDevices.forEach((device) => {
               devicesObservableArray.push({
-                value: device.id,
+                value: parseInt(device.id),
                 label: device.description
               });
             });
@@ -39,12 +39,12 @@ define([
 
         this.connect = (deviceId, timePeriod) => {
           this.disconnect();
-          this.gpsDeviceId = parseInt(deviceId);
-          if (isNaN(this.gpsDeviceId)) {
-            // If value is not a valid int, we don't do anything
+          this.gpsDeviceId = deviceId;
+          this.timePeriod = timePeriod;
+          if (isNaN(this.gpsDeviceId) || isNaN(this.timePeriod)) {
+            // If GPS device or period not provided, no point to fetch
             return;
           }
-          this.timePeriod = timePeriod;
           this.fetchLastPoints();
         };
 
@@ -52,38 +52,32 @@ define([
           if ("fetchLastPointsTimeoutId" in this) {
             clearTimeout(this.fetchLastPointsTimeoutId);
           }
-          if (!isNaN(this.timePeriod)) {
-            const now = new Date();
-            this.points.remove(
-              (point) => point.timestamp + this.timePeriod * 60 * 1000 < now
-            );
-          }
+          const now = new Date();
+          const earliestAllowed = now - this.timePeriod * 60 * 1000;
+          this.points.remove(
+            (point) => point.timestamp < earliestAllowed
+          );
           const existingPointsArray = this.points();
-          const lastPointId = existingPointsArray.length > 0
-            ? existingPointsArray[existingPointsArray.length - 1].id
-            : 0;
+          const requestTimestamp = existingPointsArray.length > 0
+            ? existingPointsArray[existingPointsArray.length - 1].timestamp + 1 // add 1 ms to prevent getting the same point multiple times
+            : earliestAllowed;
           return $.ajax({
-            url: `${AppConstants.GPS_DEVICE_URL}/${this.gpsDeviceId}/point?lastPointId=${lastPointId}&limit=${AppConstants.POINTS_LIMIT}`,
+            url: `${AppConstants.GPS_DEVICE_URL}/${this.gpsDeviceId}/point?fromTimestamp=${requestTimestamp}`,
           }).done((response) => {
             const newPoints = response.points
               .map(payloadPoint => ({
                 id: payloadPoint.id,
                 lat: payloadPoint.lat,
                 lon: payloadPoint.lon,
-                timestamp: Date.parse(payloadPoint.timestamp),
+                timestamp: payloadPoint.timestamp,
                 speed: payloadPoint.speed,
                 altitude: payloadPoint.altitude,
                 direction: payloadPoint.direction,
                 accuracy: payloadPoint.accuracy
               }))
-              .sort((aPoint, bPoint) => aPoint.id - bPoint.id);
+              .sort((aPoint, bPoint) => aPoint.timestamp - bPoint.timestamp);
             for (const newPoint of newPoints) {
-              if (newPoint.id > lastPointId) {
-                this.points.push(newPoint);
-                if (this.points().length > AppConstants.POINTS_LIMIT) {
-                  this.points.splice(0, 1);
-                }
-              }
+              this.points.push(newPoint);
             }
             this.fetchLastPointsTimeoutId = setTimeout(
               this.fetchLastPoints, AppConstants.POINTS_UPDATE_INTERVAL_MS);
@@ -114,7 +108,7 @@ define([
             clearTimeout(this.fetchLastPointsTimeoutId);
           }
           while (this.points().length > 0) {
-            this.points.pop();
+            this.points.shift();
           }
         };
       }

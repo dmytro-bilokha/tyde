@@ -8,7 +8,7 @@ public class PointModel {
     private long id;
     private BigDecimal lat;
     private BigDecimal lon;
-    private Instant timestamp;
+    private long timestamp;
     private BigDecimal speed;
     private BigDecimal altitude;
     private BigDecimal direction;
@@ -38,11 +38,11 @@ public class PointModel {
         this.lon = lon;
     }
 
-    public Instant getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Instant timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

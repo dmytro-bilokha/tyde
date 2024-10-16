@@ -2,22 +2,22 @@
 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.37297347&lon=4.89436961&timestamp=1702115984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.37297347&lon=4.89436961&timestamp=1702115984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.7297347&lon=4.9436961&timestamp=1702215984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.7297347&lon=4.9436961&timestamp=1702215984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.7297347&lon=4.436961&timestamp=1702315984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.7297347&lon=4.436961&timestamp=1702315984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.297347&lon=4.36961&timestamp=1702415984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.297347&lon=4.36961&timestamp=1702415984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.97347&lon=4.861&timestamp=1702515984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.97347&lon=4.861&timestamp=1702515984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.7347&lon=4.6961&timestamp=1702615984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.7347&lon=4.6961&timestamp=1702615984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 
 curl -X POST http://localhost:8080/tyde/service/point \
    -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "lat=52.297347&lon=4.61&timestamp=1702715984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps" 
+   -d "lat=52.297347&lon=4.61&timestamp=1702715984&speed=1.44&altitude=143.287353515625&direction=176.4&accuracy=35.62851333618164&provider=gps&token=A" 

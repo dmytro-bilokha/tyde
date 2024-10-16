@@ -51,11 +51,6 @@
 
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>PointEndpoint</web-resource-name>
-      <description>Security constraint for Point WebSocket endpoint</description>
-      <url-pattern>/point-endpoint/*</url-pattern>
-    </web-resource-collection>
-    <web-resource-collection>
       <web-resource-name>UserResource</web-resource-name>
       <description>Security constraint for UserResource</description>
       <url-pattern>/service/user/*</url-pattern>

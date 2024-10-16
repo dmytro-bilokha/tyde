@@ -33,7 +33,7 @@ public class PointMapper {
         pointModel.setId(point.getId());
         pointModel.setLat(point.getLat());
         pointModel.setLon(point.getLon());
-        pointModel.setTimestamp(point.getClientTimestamp());
+        pointModel.setTimestamp(point.getServerTimestamp().toEpochMilli());
         pointModel.setSpeed(point.getSpeed());
         pointModel.setAltitude(point.getAltitude());
         pointModel.setDirection(point.getDirection());

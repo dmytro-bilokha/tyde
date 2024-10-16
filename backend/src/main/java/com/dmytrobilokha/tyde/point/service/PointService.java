@@ -18,7 +18,7 @@ public class PointService {
 
     private static final int MAX_CAPACITY = 10000;
     private static final Duration MAX_DURATION = Duration.ofHours(48L);
-    private static final Comparator<Point> POINT_COMPARATOR = Comparator.comparingLong(Point::getId);
+    private static final Comparator<Point> POINT_COMPARATOR = Comparator.comparing(Point::getServerTimestamp);
 
     private final Map<Long, TreeSet<Point>> pointStorage = new HashMap<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -38,21 +38,21 @@ public class PointService {
     }
 
     private void cleanUpPoints(NavigableSet<Point> points) {
+        // TODO: to have proper retention policy, this should be executed by timer, not only when a point is added
+        var earliestAllowed = Instant.now().minus(MAX_DURATION);
+        points.headSet(getReferencePoint(earliestAllowed)).clear();
         while (points.size() >= MAX_CAPACITY) {
             points.pollFirst();
         }
-        var earliestAllowed = Instant.now().minus(MAX_DURATION);
-        for (var iterator = points.iterator(); iterator.hasNext();) {
-            var point = iterator.next();
-            if (point.getServerTimestamp().isBefore(earliestAllowed)) {
-                iterator.remove();
-            } else {
-                break;
-            }
-        }
     }
 
-    public List<Point> getLastPoints(long gpsDeviceId, long lastId, int limit) {
+    private Point getReferencePoint(Instant timestamp) {
+        var point = new Point();
+        point.setServerTimestamp(timestamp);
+        return point;
+    }
+
+    public List<Point> fetchLastPoints(long gpsDeviceId, Instant fromTimestamp) {
         var lastPoints = new ArrayList<Point>();
         try {
             lock.readLock().lock();
@@ -60,13 +60,8 @@ public class PointService {
             if (points == null) {
                 return lastPoints;
             }
-            var referencePoint = new Point();
-            referencePoint.setId(lastId);
-            for (var iterator = points.tailSet(referencePoint, false).descendingIterator();
-                 iterator.hasNext() && lastPoints.size() < limit;) {
-                var point = iterator.next();
-                lastPoints.add(point);
-            }
+            var referencePoint = getReferencePoint(fromTimestamp);
+            lastPoints.addAll(points.tailSet(referencePoint, false));
             return lastPoints;
         } finally {
             lock.readLock().unlock();

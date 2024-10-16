@@ -7,6 +7,7 @@ import com.dmytrobilokha.tyde.point.service.GpsDeviceAccessControlService;
 import com.dmytrobilokha.tyde.point.service.PointService;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.GET;
@@ -18,9 +19,13 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.SecurityContext;
 
+import java.time.Instant;
+
 @RequestScoped
 @Path("gps-device")
 public class GpsDeviceResource {
+
+    private static final long YEAR_2124_MILLIS = 4882534016216L;
 
     private GpsDeviceAccessControlService accessControlService;
     private PointMapper pointMapper;
@@ -58,13 +63,12 @@ public class GpsDeviceResource {
     public LastPointsModel getLastPoints(
             // TODO: add proper error messages
             @PathParam("gpsDeviceId") @NotNull @Min(0) Long gpsDeviceId,
-            @QueryParam("lastPointId") @NotNull @Min(0) Long lastPointId,
-            @QueryParam("limit") @NotNull @Min(0) Integer limit,
+            @QueryParam("fromTimestamp") @NotNull @Min(0) @Max(YEAR_2124_MILLIS) Long fromTimestamp,
             @Context SecurityContext securityContext
     ) throws InvalidInputException {
         accessControlService.checkUserAccess(securityContext.getUserPrincipal(), gpsDeviceId);
         var response = new LastPointsModel();
-        response.setPoints(pointService.getLastPoints(gpsDeviceId, lastPointId, limit)
+        response.setPoints(pointService.fetchLastPoints(gpsDeviceId, Instant.ofEpochMilli(fromTimestamp))
                 .stream()
                 .map(pointMapper::mapToPointModel)
                 .toList());

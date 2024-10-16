@@ -26,6 +26,7 @@ define([
 				this.selectedGpsDeviceId = ko.observable();
 
 				this.timePeriods = [
+					{ value: 3, label: '3 minutes' },
 					{ value: 60, label: '1 hour' },
 					{ value: 120, label: '2 hours' },
 					{ value: 600, label: '10 hours' },
@@ -36,7 +37,6 @@ define([
 				});
 				this.selectedPeriod = ko.observable(120);
 
-				this.lastMarker = null;
 				this.line = null;
 				this.map = null;
 				this.pointsLatLng = [];
@@ -62,7 +62,6 @@ define([
 
 				this.connected = () => {
 					pointManager.fetchAvailableDevices(this.devices);
-					console.log("Map connecting...");
 					accUtils.announce('Map page loaded.');
 					this.map = L.map('map', { zoomControl: false }).setView([52.374450758981276, 4.895229400019448], 13);
 					L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -71,7 +70,6 @@ define([
 					}).addTo(this.map);
 					this.line = L.polyline(this.pointsLatLng).addTo(this.map);
 					pointManager.init(this.onPointsChange);
-					console.log("Map connected");
 				};
 
 				this.onGpsDeviceChange = (deviceChangeEvent) => {
@@ -79,7 +77,7 @@ define([
 				};
 
 				this.onTimePeriodChange = (periodChangeEvent) => {
-					pointManager.connect(this.selectedGpsDeviceId(), this.selectedPeriod());
+					pointManager.connect(this.selectedGpsDeviceId(), periodChangeEvent.detail.value);
 				};
 
 				this.onPointsChange = (changes) => {
@@ -103,13 +101,14 @@ define([
 							this.pointsLatLng.splice(change.index, 1);
 							this.map.removeLayer(this.markers[change.index]);
 							this.markers.splice(change.index, 1);
+						} else {
+							alert(`Unrecognize points change status: ${change.status}`);
 						}
 					}
 					this.line.setLatLngs(this.pointsLatLng);
 				};
 
 				this.disconnected = () => {
-					this.lastMarker = null;
 					this.line = null;
 					this.map = null;
 					pointManager.destruct();
