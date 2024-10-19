@@ -98,14 +98,14 @@ define([
 							this.markers.push(circleMarker);
 							this.map.setView(pointLatLng);
 						} else if (change.status === 'deleted') {
-							this.pointsLatLng.splice(change.index, 1);
-							this.map.removeLayer(this.markers[change.index]);
-							this.markers.splice(change.index, 1);
+							this.pointsLatLng.shift();
+							const marker = this.markers.shift();
+							this.map.removeLayer(marker);
 						} else {
 							alert(`Unrecognize points change status: ${change.status}`);
 						}
+						this.line.setLatLngs(this.pointsLatLng);
 					}
-					this.line.setLatLngs(this.pointsLatLng);
 				};
 
 				this.disconnected = () => {
