@@ -27,6 +27,10 @@ import java.time.temporal.ChronoUnit;
 public class GpsDeviceResource {
 
     private static final long YEAR_2124_MILLIS = 4882534016216L;
+    private static final long MAX_RETENTION_MINUTES = PointService.MAX_RETENTION_HOURS * 60;
+    private static final String GPS_DEVICE_PARAM = "gpsDeviceId";
+    private static final String FROM_TIME_PARAM = "fromTimestamp";
+    private static final String LAST_MINUTES_PARAM = "lastMinutes";
 
     private GpsDeviceAccessControlService accessControlService;
     private PointMapper pointMapper;
@@ -62,10 +66,19 @@ public class GpsDeviceResource {
     @Path("{gpsDeviceId}/point")
     @Produces(MediaType.APPLICATION_JSON)
     public LastPointsModel getLastPoints(
-            // TODO: add proper error messages
-            @PathParam("gpsDeviceId") @NotNull @Min(0) Long gpsDeviceId,
-            @QueryParam("fromTimestamp") @NotNull @Min(0) @Max(YEAR_2124_MILLIS) Long fromTimestamp,
-            @QueryParam("lastMinutes") @NotNull @Min(0) @Max(48 * 60) Long lastMinutes,
+            @PathParam(GPS_DEVICE_PARAM)
+            @NotNull(message = GPS_DEVICE_PARAM + " must be provided")
+            @Min(value = 0, message = GPS_DEVICE_PARAM + " must not be negative") Long gpsDeviceId,
+            @QueryParam(FROM_TIME_PARAM)
+            @NotNull(message = FROM_TIME_PARAM + " must be provided")
+            @Min(value = 0, message = FROM_TIME_PARAM + " must not be negative")
+            @Max(value = YEAR_2124_MILLIS,
+                 message = FROM_TIME_PARAM + " must not be higher than " + YEAR_2124_MILLIS) Long fromTimestamp,
+            @QueryParam(LAST_MINUTES_PARAM)
+            @NotNull(message = LAST_MINUTES_PARAM + " must be provided")
+            @Min(value = 0, message = LAST_MINUTES_PARAM + " must not be negative")
+            @Max(value = MAX_RETENTION_MINUTES,
+                 message = LAST_MINUTES_PARAM + " must not be higher than " + MAX_RETENTION_MINUTES) Long lastMinutes,
             @Context SecurityContext securityContext
     ) throws InvalidInputException {
         accessControlService.checkUserAccess(securityContext.getUserPrincipal(), gpsDeviceId);

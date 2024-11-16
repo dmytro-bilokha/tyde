@@ -1,7 +1,6 @@
 package com.dmytrobilokha.tyde.point.jaxrs;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 public class PointModel {
 

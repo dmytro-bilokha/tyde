@@ -16,8 +16,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @ApplicationScoped
 public class PointService {
 
+    public static final int MAX_RETENTION_HOURS = 48;
     private static final int MAX_CAPACITY = 10000;
-    private static final Duration MAX_DURATION = Duration.ofHours(48L);
+    private static final Duration MAX_DURATION = Duration.ofHours(MAX_RETENTION_HOURS);
     private static final Comparator<Point> POINT_COMPARATOR = Comparator.comparing(Point::getServerTimestamp);
 
     private final Map<Long, TreeSet<Point>> pointStorage = new HashMap<>();
@@ -30,6 +31,9 @@ public class PointService {
             lock.writeLock().lock();
             var points = pointStorage.computeIfAbsent(
                     point.getGpsDeviceId(), gpsDeviceId -> new TreeSet<>(POINT_COMPARATOR));
+            // Cleanup is triggered when the new point is to be registered,
+            // this means last points could be stored in memory for longer than retention period.
+            // Thus, access to them should be blocked on input request validation.
             cleanUpPoints(points);
             points.add(point);
         } finally {
@@ -38,7 +42,6 @@ public class PointService {
     }
 
     private void cleanUpPoints(NavigableSet<Point> points) {
-        // TODO: to have proper retention policy, this should be executed by timer, not only when a point is added
         var earliestAllowed = Instant.now().minus(MAX_DURATION);
         points.headSet(getReferencePoint(earliestAllowed)).clear();
         while (points.size() >= MAX_CAPACITY) {
